@@ -10,5 +10,8 @@ public class Stoicalc {
         //Chem bank: contains data for chemical calculations.
         //Maths: handles the compelx calculations
         //Graphing: If there is time: graphs for chemical data.
+        
+        //This file? Handles opening and closing the program.
+        //maybe saved data will be kept here? who knows.
     }
 }
