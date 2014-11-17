@@ -1,7 +1,14 @@
 package ib_project2;
 
+import javax.swing.*;
+
 public class Stoicalc {
-    public static void main(String[] args){
+    static GUI gui = new GUI();
+    static Chemistry chemistry = new Chemistry();
+    static Graphing graphing = new Graphing();
+    static Processing processing = new Processing();
+   
+    public static void main(String[] args) {
         //and so, the STOIC CALC program begins.
         
         //Major Clusters:
@@ -13,5 +20,7 @@ public class Stoicalc {
         
         //This file? Handles opening and closing the program.
         //maybe saved data will be kept here? who knows.
+        
+        gui.GUI();
     }
 }
