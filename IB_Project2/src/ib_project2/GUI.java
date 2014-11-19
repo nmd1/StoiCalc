@@ -22,10 +22,13 @@ public class GUI {
         main.setSize(565,402);
         main.setVisible(true);
         main.setResizable(true);
-        DebugSize(main);
+        main.setLocation(458, 235);
         
-        debugLabel.setVisible(true);
+        if(debug)DebugSize(main);
+        
         debugLabel2.setVisible(true);
+        debugLabel.setVisible(true);
+        
         
         main.add(pane);
         pane.setLayout(layout);
@@ -66,22 +69,28 @@ public class GUI {
     }
     
     public void DebugSize(final JFrame j) {
+        pane.add(debugLabel2);
+        
+        Layout(debugLabel2, 350, 335);
+        pane.add(debugLabel);
+        Layout(debugLabel, 30, 335);
+        main.pack();
+        //If you add components to the frame after it is visible then
+        //you need to revalidate() the JPanel that you add the components to. 
         j.addComponentListener(new ComponentListener() {
             
             @Override
             public void componentResized(ComponentEvent e) {
                 //System.out.println(j.getSize());
                 Dimension d = j.getSize();
-                pane.add(debugLabel);
-                Layout(debugLabel, 30, 30);
+
                 debugLabel.setText(d.toString());
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
                 Point d = j.getLocationOnScreen();
-                pane.add(debugLabel2);
-                Layout(debugLabel2, 30, 70);
+
                 debugLabel2.setText(d.toString());
             }
 
