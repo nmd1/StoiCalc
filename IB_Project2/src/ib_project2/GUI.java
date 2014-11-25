@@ -5,8 +5,8 @@ import java.awt.event.*;
 import javax.swing.*;
 public class GUI {
     public JFrame main;
-    public Label debugLabel = new Label();
-    public Label debugLabel2 = new Label();
+    public Label debugLabel;
+    public Label debugLabel2;
     SpringLayout layout = new SpringLayout();
     Container pane = new Container();
     int xc, yc;
@@ -16,22 +16,14 @@ public class GUI {
     public Button[] buttons = new Button[100];
     
     public void GUI(){
+        pane = new Container();
         main = new JFrame();
-        main.setTitle("Main Menu");
         newPanel(main);
-        main.setSize(565,402);
-        main.setVisible(true);
-        main.setResizable(true);
-        main.setLocation(458, 235);
-        
         if(debug)DebugSize(main);
         
-        debugLabel2.setVisible(true);
-        debugLabel.setVisible(true);
+       
         
         
-        main.add(pane);
-        pane.setLayout(layout);
         
         if(debug == true) main.addMouseListener(new PanelListener());
         
@@ -53,12 +45,15 @@ public class GUI {
         
         main.add(titleLabel);
         pack(main);
+        main.revalidate();
+        main.setVisible(true);
     }
     
     
     //===============================HELPER METHODS=====================================//
     private void pack(JFrame J){
-        J.pack();
+        //J.pack();
+        //J.revalidate();
         main.setSize(565,402);
     }
     
@@ -68,16 +63,17 @@ public class GUI {
     }
     
     private void newPanel(JFrame j) {
-        
+        j.setTitle("Main Menu");
+        j.setSize(565,402);
+        j.setResizable(true);
+        j.setLocation(458, 235);
+        j.add(pane);
+        j.setLayout(layout);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         j.setLocationRelativeTo(null);
-        j.setResizable(true);
-        /*
-        if(j.getTitle().equals("Main Menu")) {
-            j.setVisible(true);
-        } else {
-            j.setVisible(false);
-        }*/
+        j.setVisible(false);
+        
+        
     }
     //=================================DEBUG METHODS====================================//
     private class PanelListener extends MouseAdapter { //mouse position
@@ -93,11 +89,26 @@ public class GUI {
     
     public void DebugSize(final JFrame j) {
         if(debug) {
+            debugLabel = new Label();
+            debugLabel2 = new Label();
+
+            debugLabel.setText("asdf");
+            debugLabel2.setText("asdf");
+            
+            pane.(25, 25);
             pane.add(debugLabel2);
-            Layout(debugLabel2, 350, 335);
             pane.add(debugLabel);
-            Layout(debugLabel, 30, 335);
+            
+            
+            //Layout(debugLabel2, 350, 335);
+            Layout(debugLabel, 30, 335);       
+               debugLabel2.setVisible(true);
+            debugLabel.setVisible(true);
+            
+            
+            
             pack(main);
+            
             //If you add components to the frame after it is visible then
             //you need to revalidate() the JPanel that you add the components to. 
             j.addComponentListener(new ComponentListener() {
