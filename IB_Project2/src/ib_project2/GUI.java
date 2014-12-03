@@ -16,11 +16,27 @@ public class GUI {
     public Button[] buttons = new Button[100];
     
     public void GUI(){
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         pane = new Container();
         main = new JFrame();
         newPanel(main);
-        if(debug)DebugSize(main);
-        
+        pane.setSize(main.getSize());
+        //pane.setLayout(layout);
        
         
         
@@ -28,6 +44,7 @@ public class GUI {
         if(debug == true) main.addMouseListener(new PanelListener());
         
         mainWindow();
+        main.setVisible(true);
     }
     //=====================================BODY==========================================//
     
@@ -40,13 +57,22 @@ public class GUI {
         
         //SOLVE MANY BUTTONS PROBLEM
         Button conv = new Button();
-        conv = buttons[1];
+        conv.setLabel("Text");
+        Layout(conv, 88, 100);
+        conv.setVisible(true);
+        
+        
+        
         
         
         main.add(titleLabel);
+        main.add(conv);
         pack(main);
         main.revalidate();
-        main.setVisible(true);
+        
+        if(debug)DebugSize(main);
+        
+        
     }
     
     
@@ -68,10 +94,10 @@ public class GUI {
         j.setResizable(true);
         j.setLocation(458, 235);
         j.add(pane);
+        
         j.setLayout(layout);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         j.setLocationRelativeTo(null);
-        j.setVisible(false);
         
         
     }
@@ -88,26 +114,24 @@ public class GUI {
     }
     
     public void DebugSize(final JFrame j) {
-        if(debug) {
+        
             debugLabel = new Label();
             debugLabel2 = new Label();
 
             debugLabel.setText("asdf");
             debugLabel2.setText("asdf");
             
-            pane.(25, 25);
-            pane.add(debugLabel2);
-            pane.add(debugLabel);
+            //pane.(25, 25);
             
             
-            //Layout(debugLabel2, 350, 335);
+            
+            Layout(debugLabel2, 350, 335);
             Layout(debugLabel, 30, 335);       
-               debugLabel2.setVisible(true);
+            debugLabel2.setVisible(true);
             debugLabel.setVisible(true);
             
             
             
-            pack(main);
             
             //If you add components to the frame after it is visible then
             //you need to revalidate() the JPanel that you add the components to. 
@@ -138,6 +162,11 @@ public class GUI {
 
                 }
             });
-        }
+            
+            Layout(debugLabel, 30, 335);
+            main.add(debugLabel2);
+            main.add(debugLabel);
+            pack(main);
+        
     }
 }
