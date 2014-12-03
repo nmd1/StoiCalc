@@ -16,31 +16,11 @@ public class GUI {
     public Button[] buttons = new Button[100];
     
     public void GUI(){
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         pane = new Container();
         main = new JFrame();
         newPanel(main);
-        pane.setSize(main.getSize());
-        //pane.setLayout(layout);
-       
-        
-        
-        
+        pane.setSize(main.getSize());//VERY IMPORTANT
+
         if(debug == true) main.addMouseListener(new PanelListener());
         
         mainWindow();
@@ -56,27 +36,36 @@ public class GUI {
         titleLabel.setVisible(true);
         
         //SOLVE MANY BUTTONS PROBLEM
+        
         Button conv = new Button();
-        conv.setLabel("Text");
-        Layout(conv, 88, 100);
+        conv.setLabel("Stoic");
+        //conv.set(100,100);//ENDED HERE ENLARGE BUTTOn
+        Layout(conv, 100, 150);
         conv.setVisible(true);
         
         
         
         
-        
+        //end of adding components 
         main.add(titleLabel);
         main.add(conv);
-        pack(main);
-        main.revalidate();
-        
         if(debug)DebugSize(main);
+        //pack(main); //CHANGE IF COMPONENTS NOT SHOWING UP
+        //main.revalidate();//CHANGE IF COMPONENTS NOT SHOWING UP
+        
         
         
     }
     
     
     //===============================HELPER METHODS=====================================//
+    private void newButton(Button b, String text, int x, int y) {
+        b = new Button();
+        b.setLabel(text);
+        Layout(b, x, y);
+        b.setVisible(true);
+    }
+    
     private void pack(JFrame J){
         //J.pack();
         //J.revalidate();
