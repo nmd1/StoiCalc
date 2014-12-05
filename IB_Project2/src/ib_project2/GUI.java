@@ -4,11 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 public class GUI {
-    public JFrame main;
-    public Label debugLabel;
-    public Label debugLabel2;
+    public JFrame main, stoic;
+    public JLabel debugLabel, debugLabel2;
     SpringLayout layout = new SpringLayout();
-    Container pane = new Container();
+    Container pane = new Container(), sPane;
+    TextField equation;
     int xc, yc;
     boolean debug = true;
     
@@ -37,18 +37,27 @@ public class GUI {
         
         //SOLVE MANY BUTTONS PROBLEM
         
-        Button conv = new Button();
-        conv.setLabel("Stoic");
-        //conv.set(100,100);//ENDED HERE ENLARGE BUTTOn
+        JButton conv = new JButton();
+        conv.setText("stoic");
+        Dimension a = new Dimension(100,40);
+        conv.setPreferredSize(a);
         Layout(conv, 100, 150);
         conv.setVisible(true);
+        conv.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stoicWindow();
+            }
+        });
         
         
         
-        
-        //end of adding components 
+        //ADDING COMPONENTS
         main.add(titleLabel);
         main.add(conv);
+        
+        
+        
         if(debug)DebugSize(main);
         //pack(main); //CHANGE IF COMPONENTS NOT SHOWING UP
         //main.revalidate();//CHANGE IF COMPONENTS NOT SHOWING UP
@@ -56,6 +65,54 @@ public class GUI {
         
         
     }
+    
+    public void stoicWindow() {
+        sPane = new Container();
+        stoic = new JFrame();
+        newPanel(stoic);
+        stoic.setName("Stoiciometry");
+        pane.setSize(main.getSize());//VERY IMPORTANT
+        main.setVisible(false);
+        stoic.setVisible(true);
+        //setting up the window
+        
+        
+        equation = new TextField();
+        equation.getPreferredSize(100);
+        Layout(equation, 100, 150);
+
+        equation.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char z = e.getKeyChar();
+                boolean good = (z == '+') || (z == '-') || (z == '.') ||
+                        (z >= 48 & z <= 57) || (z >= 65 & z <= 90) 
+                        || (z >= 97 & z <= 122);
+                boolean badGood = (z != 81) || (z != 113) ||
+                        (z != 74) || (z != 106);
+                
+                if(!good) e.consume();
+
+               // if(e.getKeyChar())
+                    //43 (+) 45 (-) 46 (.)
+                    //81, 113, 74, 106 bad numbers
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                
+            }
+        });
+        stoic.add(equation);
+    }
+    //==============================ACTION LISTENERS====================================//
     
     
     //===============================HELPER METHODS=====================================//
@@ -104,8 +161,8 @@ public class GUI {
     
     public void DebugSize(final JFrame j) {
         
-            debugLabel = new Label();
-            debugLabel2 = new Label();
+            debugLabel = new JLabel();
+            debugLabel2 = new JLabel();
 
             debugLabel.setText("asdf");
             debugLabel2.setText("asdf");
