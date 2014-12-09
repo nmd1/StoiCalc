@@ -2,6 +2,7 @@ package ib_project2;;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import javax.swing.*;
 public class GUI {
     public JFrame main, stoic;
@@ -77,23 +78,30 @@ public class GUI {
         //setting up the window
         
         
+        final JLabel output = new JLabel();
+        output.setText("This is what the JLabel looks like now: Empty");
+        output.setSize(10,50);
+        
         equation = new TextField();
-        equation.getPreferredSize(100);
+        equation.setColumns(50);
+     
         Layout(equation, 100, 150);
-
+        Layout(output, 100, 100);
         equation.addKeyListener(new KeyListener() {
 
             @Override
             public void keyTyped(KeyEvent e) {
                 char z = e.getKeyChar();
+                //System.out.print(z);
                 boolean good = (z == '+') || (z == '-') || (z == '.') ||
                         (z >= 48 & z <= 57) || (z >= 65 & z <= 90) 
-                        || (z >= 97 & z <= 122);
-                boolean badGood = (z != 81) || (z != 113) ||
-                        (z != 74) || (z != 106);
+                        || (z >= 97 & z <= 122) || (z == 91) || (z == 93)
+                        || (z == 60) || (z == 62);
+                boolean badGood = (z == 81) || (z == 113) ||
+                        (z == 74) || (z == 106);
                 
                 if(!good) e.consume();
-
+                if(badGood) e.consume();
                // if(e.getKeyChar())
                     //43 (+) 45 (-) 46 (.)
                     //81, 113, 74, 106 bad numbers
@@ -107,10 +115,30 @@ public class GUI {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                //Here is where we parse the string.
+                //its time to make an algorithm.
+                //-MgCl --> Mg22+ + Cl-
+                
+                //YOU ARE WORKING HERE+======================================================<<<<<<<<<<<<<<<
+                //output.setText(equation.getText());
+                String templist[] = equation.getText().split("-->|\\+|<-->|\\s+");
+                ArrayList<String> chemicals = new ArrayList<>(Arrays.asList(templist));
+                int clear = 0;
+                /*for(String a : chemicals) {
+                    if(a.equals("") || a.equals(" ")) {
+                        chemicals.remove(clear);
+                    }
+                    clear++;
+                }*/
+                System.out.println(chemicals.toString());
+                
+
+                Stack dump = new Stack();
                 
             }
         });
         stoic.add(equation);
+        stoic.add(output);
     }
     //==============================ACTION LISTENERS====================================//
     
