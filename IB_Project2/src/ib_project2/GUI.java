@@ -96,7 +96,7 @@ public class GUI {
                 boolean good = (z == '+') || (z == '-') || (z == '.') ||
                         (z >= 48 & z <= 57) || (z >= 65 & z <= 90) 
                         || (z >= 97 & z <= 122) || (z == 91) || (z == 93)
-                        || (z == 60) || (z == 62);
+                        || (z == 60) || (z == 62) || (z == 32);
                 boolean badGood = (z == 81) || (z == 113) ||
                         (z == 74) || (z == 106);
                 
@@ -119,20 +119,73 @@ public class GUI {
                 //its time to make an algorithm.
                 //-MgCl --> Mg22+ + Cl-
                 
-                //YOU ARE WORKING HERE+======================================================<<<<<<<<<<<<<<<
+                
                 //output.setText(equation.getText());
-                String templist[] = equation.getText().split("-->|\\+|<-->|\\s+");
+                
+                //SPLITTING ALGORTHYTHM!
+                String templist[] = equation.getText().split("-->|\\s+\\+\\s+|<-->|\\s+");
                 ArrayList<String> chemicals = new ArrayList<>(Arrays.asList(templist));
-                int clear = 0;
-                /*for(String a : chemicals) {
-                    if(a.equals("") || a.equals(" ")) {
-                        chemicals.remove(clear);
-                    }
-                    clear++;
-                }*/
+                chemicals.remove(" ");
+                chemicals.remove("");
+                chemicals.remove("\n");
+                chemicals.remove(" ");
+                chemicals.remove("");
                 System.out.println(chemicals.toString());
                 
-
+                String chem = "";
+                String subscr = "";
+                String ion = "";
+                String bigNumb = "";
+                
+                for(String a : chemicals) {
+                   //possible strings
+                   //Cu(H2O)2+
+                   //Na+
+                   //Na1+
+                   char tempList[] = a.toCharArray();
+                   
+                   
+                   //finds ion numbers
+                   int chemNumbL = 0;
+                   int chemNumbF = 0;
+                   for(int i = tempList.length - 1; i > 0; i--) {
+                   //0-5 length: 6
+                   if(Character.isLetter(tempList[i])){
+                       chemNumbL = i;
+                       break;
+                   }
+                   ion = ion + tempList[i];
+                   
+                   
+                   }
+                   ion = new StringBuilder(ion).reverse().toString();
+                   System.out.println(ion);
+                   
+                   //SuperScript Number
+                   for(int i = 0; i < chemNumbL; i++) {
+                       if(Character.isLetter(tempList[i])) {
+                           chemNumbF = i;
+                           break;
+                       }
+                       bigNumb = bigNumb + tempList[i];
+                       
+                   }
+                   bigNumb = new StringBuilder(bigNumb).reverse().toString();
+                   
+                   JLabel templbl = new JLabel();
+                   for(int i = chemNumbF; i < chemNumbL; i++) {
+                       //YOU ARE WORKING HERE+======================================================<<<<<<<<<<<<<<<
+                       if(Character.isDigit(tempList[i])) {
+                           templbl.setText(templbl.getText() + "<html><sub>"+tempList[i]+"</sub></html>");
+                       } else {
+                           templbl.setText(templbl.getText() + tempList[i]);
+                       }
+                       
+                   }
+                   //WORK ON THIS ITS BROKEN======================<<<<<<<<<<<<<<<<<<<<
+                   
+                }
+                output.setText("<html>"+bigNumb+"<sup>"+ion+"</sup></html>");
                 Stack dump = new Stack();
                 
             }
