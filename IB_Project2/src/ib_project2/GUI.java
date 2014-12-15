@@ -133,11 +133,13 @@ public class GUI {
                 System.out.println(chemicals.toString());
                 
                 String chem = "";
-                String subscr = "";
                 String ion = "";
                 String bigNumb = "";
+                int count = 0;
                 
                 for(String a : chemicals) {
+                    
+                   //for each individual chemical in this equations
                    //possible strings
                    //Cu(H2O)2+
                    //Na+
@@ -158,7 +160,9 @@ public class GUI {
                    
                    
                    }
+                   
                    ion = new StringBuilder(ion).reverse().toString();
+                   ion = superScript(ion);
                    System.out.println(ion);
                    
                    //SuperScript Number
@@ -171,24 +175,28 @@ public class GUI {
                        
                    }
                    bigNumb = new StringBuilder(bigNumb).reverse().toString();
+                   //end 
                    
-                   JLabel templbl = new JLabel();
-                   for(int i = chemNumbF; i < chemNumbL; i++) {
-                       //YOU ARE WORKING HERE+======================================================<<<<<<<<<<<<<<<
-                       if(Character.isDigit(tempList[i])) {
-                           templbl.setText(templbl.getText() + "<html><sub>"+tempList[i]+"</sub></html>");
-                       } else {
-                           templbl.setText(templbl.getText() + tempList[i]);
-                       }
-                       
-                   }
-                   //WORK ON THIS ITS BROKEN======================<<<<<<<<<<<<<<<<<<<<
-                   
-                }
-                output.setText("<html>"+bigNumb+"<sup>"+ion+"</sup></html>");
-                Stack dump = new Stack();
+                    for(int i = chemNumbF; i < chemNumbL + 1; i++) {
+                        chem = chem + tempList[i];
+                    }
+
+                    chem = subScript(chem);
+
+                    chemicals.set(count, chem + ion);
+
+                    count++;
+                    chem = "";
+                    ion = "";
+                    bigNumb = "";
+                    
+                    //WORK ON THIS==================================================
+                }//end of loop for this individual chemical
+                output.setText(chemicals.toString());
                 
-            }
+                
+               
+            }//end of key release  
         });
         stoic.add(equation);
         stoic.add(output);
@@ -197,6 +205,36 @@ public class GUI {
     
     
     //===============================HELPER METHODS=====================================//
+    
+    private static String superScript(String str) {
+        str = str.replaceAll("0", "⁰");
+        str = str.replaceAll("1", "¹");
+        str = str.replaceAll("2", "²");
+        str = str.replaceAll("3", "³");
+        str = str.replaceAll("4", "⁴");
+        str = str.replaceAll("5", "⁵");
+        str = str.replaceAll("6", "⁶");
+        str = str.replaceAll("7", "⁷");
+        str = str.replaceAll("8", "⁸");
+        str = str.replaceAll("9", "⁹");
+        str = str.replaceAll("\\+","⁺"); 
+        str = str.replaceAll("-","⁻");  
+        return str;
+    }
+
+    private static String subScript(String str) {
+        str = str.replaceAll("0", "₀");
+        str = str.replaceAll("1", "₁");
+        str = str.replaceAll("2", "₂");
+        str = str.replaceAll("3", "₃");
+        str = str.replaceAll("4", "₄");
+        str = str.replaceAll("5", "₅");
+        str = str.replaceAll("6", "₆");
+        str = str.replaceAll("7", "₇");
+        str = str.replaceAll("8", "₈");
+        str = str.replaceAll("9", "₉");
+        return str;
+    }
     private void newButton(Button b, String text, int x, int y) {
         b = new Button();
         b.setLabel(text);
