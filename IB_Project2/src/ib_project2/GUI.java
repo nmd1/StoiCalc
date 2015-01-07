@@ -138,28 +138,60 @@ public class GUI {
                 int count = 0;
                 
                 for(String a : chemicals) {
+                    String error = "";
+                    //for each individual chemical in this equations
+                    //possible strings
+                    //Cu(H2O)2+
+                    //Na+
+                    //Na1+
+                    char tempList[] = a.toCharArray();
                     
-                   //for each individual chemical in this equations
-                   //possible strings
-                   //Cu(H2O)2+
-                   //Na+
-                   //Na1+
-                   char tempList[] = a.toCharArray();
+                    
+                    
+                    
+                    int n = 0;
+                    
+                    boolean plus = false, minus = false;
+                    for(int i = 0; i < a.length(); i++) {
+                        if (a.charAt(i) == '+') {
+                           n++;
+                           plus = true;
+                        }
+                        if(a.charAt(i) == '-') {
+                            n++;
+                            minus = true;
+                        }
+                    }
+                    
+                    if(plus && minus) error = error + "Error: two types of ions\n";
+                    
+                    boolean ionTrue = (n == 1);
+                    
+                    int chemNumbL = 0;
+                    int chemNumbF = 0;
+                    
+                    if(n == 1) {
+                        //finds ion numbers
+                        
+                        for(int j = tempList.length - 1; j >= 0; j--){
+                            int i = 0;
+                        //0-5 length: 6
+                        
+                            ion = ion + tempList[j];
+                            if(i == 1){
+                                chemNumbL = j;
+                                break;
+                            }
+                            i++;
+                        }
+                    } else if (n > 1) {
+                        error = error + "More than one plus or minus\n";
+                    } else {
+                        ion = "";
+                        chemNumbL = tempList.length - 1;
+                    }
                    
                    
-                   //finds ion numbers
-                   int chemNumbL = 0;
-                   int chemNumbF = 0;
-                   for(int i = tempList.length - 1; i > 0; i--) {
-                   //0-5 length: 6
-                   if(Character.isLetter(tempList[i])){
-                       chemNumbL = i;
-                       break;
-                   }
-                   ion = ion + tempList[i];
-                   
-                   
-                   }
                    
                    ion = new StringBuilder(ion).reverse().toString();
                    ion = superScript(ion);
