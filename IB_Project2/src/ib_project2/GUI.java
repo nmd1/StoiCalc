@@ -194,6 +194,23 @@ public class GUI {
                 }//end of loop for this individual chemical
                 output.setText(chemicals.toString());
                 
+                int i = 0;
+                String stringbuild = "";
+                for(String s : chemicals){
+                    
+                    if(i == 2) {
+                        stringbuild = stringbuild + "→ " + s;
+                    } else if((i + 1) == 2){
+                        stringbuild = stringbuild + s ;
+                    } else {
+                        stringbuild = stringbuild + s + " + ";
+                    }
+                    i++;
+                }
+                output.setText(stringbuild);
+
+                Font fs = new Font("Comic Sans", Font.PLAIN , 30);
+                output.setFont(fs);
                 
                
             }//end of key release  
