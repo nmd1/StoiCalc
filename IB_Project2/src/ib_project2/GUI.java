@@ -209,12 +209,27 @@ public class GUI {
                    bigNumb = new StringBuilder(bigNumb).reverse().toString();
                    //end 
                    
+                    if(n == 1) {
+                        //correction for ion number lettering
+                        chemNumbF = chemNumbF + 1;
+                    }
+                    
                     for(int i = chemNumbF; i < chemNumbL + 1; i++) {
                         chem = chem + tempList[i];
                     }
 
                     chem = subScript(chem);
-
+                    bigNumb = "";
+                            
+                    for(int i = 0; i < templist.length - 1; i++) {
+                        //find leading numbers and impliment them!\
+                        if(Character.isDigit(tempList[i])){
+                            bigNumb = bigNumb + tempList[i];
+                        } else {
+                            break;
+                        }  
+                    }
+                    
                     chemicals.set(count, chem + ion);
 
                     count++;
