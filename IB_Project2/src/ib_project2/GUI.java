@@ -136,6 +136,7 @@ public class GUI {
                 String ion = "";
                 String bigNumb = "";
                 int count = 0;
+                boolean theCarryOver = false;
                 
                 for(String a : chemicals) {
                     String error = "";
@@ -148,7 +149,12 @@ public class GUI {
                     
                     
                     
-                    
+                    //Start of complex algothem====================================START
+                    if(theCarryOver) {
+                        chemicals.remove(count - 1);
+                        theCarryOver = false;
+                    }
+                    //corrected the "2+" error
                     int n = 0;
                     
                     boolean plus = false, minus = false;
@@ -230,15 +236,20 @@ public class GUI {
                         }  
                     }
                     
-                    chemicals.set(count, chem + ion);
-
+                    if(chem.equals("")) {
+                        chemicals.set(count - 1, chemicals.get(count - 1) + ion);
+                        theCarryOver = true;
+                    } else
+                        chemicals.set(count, chem + ion);
+                    
                     count++;
                     chem = "";
                     ion = "";
                     bigNumb = "";
                     
-                    //WORK ON THIS==================================================
-                }//end of loop for this individual chemical
+                    //WORK ON THIS==================================================END
+                }//end of loop for this individual chemical\
+                
                 output.setText(chemicals.toString());
                 
                 int i = 0;
