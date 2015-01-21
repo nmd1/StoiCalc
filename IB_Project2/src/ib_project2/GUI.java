@@ -138,7 +138,7 @@ public class GUI {
                 int count = 0;
                 boolean theCarryOver = false;
                 
-                for(String a : chemicals) {
+                for(String a : chemicals) { //FIX CONCURRENT MODIFICATION EXCEPTION
                     String error = "";
                     //for each individual chemical in this equations
                     //possible strings
