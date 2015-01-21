@@ -227,7 +227,7 @@ public class GUI {
                     chem = subScript(chem);
                     bigNumb = "";
                             
-                    for(int i = 0; i < templist.length - 1; i++) {
+                    for(int i = 0; i < tempList.length - 1; i++) {
                         //find leading numbers and impliment them!\
                         if(Character.isDigit(tempList[i])){
                             bigNumb = bigNumb + tempList[i];
@@ -236,12 +236,12 @@ public class GUI {
                         }  
                     }
                     
-                    if(chem.equals("")) {
-                        chemicals.set(count - 1, chemicals.get(count - 1) + ion);
+                    if(chem.equals("")) { //if its an ion
+                        if(count >= 1) chemicals.set(count - 1, chemicals.get(count - 1) + ion);
                         theCarryOver = true;
-                    } else
-                        chemicals.set(count, chem + ion);
-                    
+                    } else{
+                        chemicals.set(count, bigNumb + chem + ion);
+                    }
                     count++;
                     chem = "";
                     ion = "";
