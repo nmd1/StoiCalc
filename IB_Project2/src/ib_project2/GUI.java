@@ -30,6 +30,7 @@ public class GUI {
     //=====================================BODY==========================================//
     
     public void mainWindow() {
+        
         titleLabel.setText("StoicCalc \n An exploration");
         Font f = new Font("Bookman Old Style", Font.PLAIN, 30);
         titleLabel.setFont(f);
@@ -171,7 +172,7 @@ public class GUI {
                     
                     if(plus && minus) error = error + "Error: two types of ions\n";
                     
-                    boolean ionTrue = (n == 1);
+                    //boolean ionTrue = (n == 1);Not used
                     
                     int chemNumbL = 0;
                     int chemNumbF = 0;
@@ -235,7 +236,7 @@ public class GUI {
                             break;
                         }  
                     }
-                    
+                    //ah yes interestin
                     if(chem.equals("")) { //if its an ion
                         if(count >= 1) chemicals.set(count - 1, chemicals.get(count - 1) + ion);
                         theCarryOver = true;
@@ -247,7 +248,10 @@ public class GUI {
                     ion = "";
                     bigNumb = "";
                     
+                    System.out.println(error);
                     //WORK ON THIS==================================================END
+                    //WORK ON THIS==================================================END
+                    
                 }//end of loop for this individual chemical\
                 
                 output.setText(chemicals.toString());
