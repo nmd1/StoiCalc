@@ -136,6 +136,8 @@ public class GUI {
                 String chem = "";
                 String ion = "";
                 String bigNumb = "";
+                boolean Hg = true;
+                boolean C = false;
                 int count = 0;
                 boolean theCarryOver = false;
                 
@@ -185,6 +187,14 @@ public class GUI {
                         //0-5 length: 6
                         
                             ion = ion + tempList[j];
+                            
+                            if(Character.isAlphabetic(tempList[j])) {
+                                Hg = false;
+                                
+                            }
+                            //^to figure out if's a legit ion or 
+                            //just 2+ 
+                            
                             if(i == 1){
                                 chemNumbL = j;
                                 break;
@@ -202,7 +212,7 @@ public class GUI {
                    
                    ion = new StringBuilder(ion).reverse().toString();
                    ion = superScript(ion);
-                   System.out.println(ion);
+                   System.out.println("THIS IS 'ION'" + ion);
                    
                    //SuperScript Number
                    for(int i = 0; i < chemNumbL; i++) {
@@ -221,8 +231,16 @@ public class GUI {
                         chemNumbF = chemNumbF + 1;
                     }
                     
+                    
                     for(int i = chemNumbF; i < chemNumbL + 1; i++) {
                         chem = chem + tempList[i];
+                        
+                        if(Character.isDigit(tempList[i])) {
+                                C = true;
+                            }
+                            //^to figure out if's a legit atom or 
+                            //just "2"
+                            
                     }
 
                     chem = subScript(chem);
@@ -236,21 +254,33 @@ public class GUI {
                             break;
                         }  
                     }
-                    //ah yes interestin
-                    if(chem.equals("")) { //if its an ion
-                        if(count >= 1) chemicals.set(count - 1, chemicals.get(count - 1) + ion);
-                        theCarryOver = true;
-                    } else{
-                        chemicals.set(count, bigNumb + chem + ion);
+                    
+                    System.out.println("||||"+ chemicals.get(count) + ion +"||||");
+                    System.out.println("Count:" + count);
+                    System.out.println("Chemicals:" + chemicals.toString());
+                    
+                    if(ion.equals("")) {
+                        chemicals.set(count, bigNumb + chem);
+                    } else if(Hg){
+                        chemicals.set(count, chem + superScript(chemicals.get(count)));
+                    } else if(C){
+                        chemicals.set(count, bigNumb);
+                        System.out.println("Went into C");
+                    } else /*if(!ion.equals("") && !Hg)*/{
+                        chemicals.set(count, bigNumb + ion);
                     }
                     count++;
                     chem = "";
                     ion = "";
                     bigNumb = "";
+                    Hg = true;
+                    C = false;
                     
                     System.out.println(error);
                     //WORK ON THIS==================================================END
                     //WORK ON THIS==================================================END
+                    
+                    //maybe impliment recusion?????
                     
                 }//end of loop for this individual chemical\
                 
