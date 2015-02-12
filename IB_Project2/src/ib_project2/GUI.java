@@ -242,10 +242,33 @@ public class GUI {
                             //just "2"
                             
                     }
-
-                    chem = subScript(chem);
-                    bigNumb = "";
+                    System.out.println("THIS IS BEING SUBSCRIPTED:" + chem);  
+                    
+                    //ALL OF THIS IS TO PREVENT THE COEFFICENT FROM BEING SUB'ED
+                    //the first number in the chemical.
+                    String trueBig = "";
+                    if(Character.isDigit(chem.charAt(0))) {
+                        //get every number up until the first character.
+                        boolean iloop = true;
+                        int il = 0;
+                        while (iloop) {
+                            if(Character.isAlphabetic(tempList[il])) {
+                                iloop = false;
+                                break;
+                            } else {
+                                trueBig = trueBig + tempList[il];
+                            }
+                            il++;
+                        }
                             
+                            
+                    }
+                    //END OF ALL OF THIS
+                    chem = subScript(chem); 
+                    chem = trueBig + chem;
+                    //WORK ON THIS...NOT YET COMPLETE
+                    //
+                    bigNumb = "";        
                     for(int i = 0; i < tempList.length - 1; i++) {
                         //find leading numbers and impliment them!\
                         if(Character.isDigit(tempList[i])){
@@ -261,13 +284,16 @@ public class GUI {
                     
                     if(ion.equals("")) {
                         chemicals.set(count, bigNumb + chem);
+                        System.out.println("Ion is empty");
                     } else if(Hg){
                         chemicals.set(count, chem + superScript(chemicals.get(count)));
+                        System.out.println("went into HG");
                     } else if(C){
                         chemicals.set(count, bigNumb);
                         System.out.println("Went into C");
                     } else /*if(!ion.equals("") && !Hg)*/{
                         chemicals.set(count, bigNumb + ion);
+                        System.out.println("Went into else");
                     }
                     count++;
                     chem = "";
@@ -283,20 +309,26 @@ public class GUI {
                     //maybe impliment recusion?????
                     
                 }//end of loop for this individual chemical\
-                
+                System.out.println("\n==========END OF THE LINE==========");
                 output.setText(chemicals.toString());
                 
                 int i = 0;
                 String stringbuild = "";
                 for(String s : chemicals){
                     
+                    if(stringbuild.isEmpty()) {
+                        stringbuild = s;
+                    } else {
+                        stringbuild = stringbuild + ", " + s;
+                    }
+                    /*
                     if(i == 2) {
                         stringbuild = stringbuild + "→ " + s;
                     } else if((i + 1) == 2){
                         stringbuild = stringbuild + s ;
                     } else {
                         stringbuild = stringbuild + s + " + ";
-                    }
+                    } */
                     i++;
                 }
                 output.setText(stringbuild);
