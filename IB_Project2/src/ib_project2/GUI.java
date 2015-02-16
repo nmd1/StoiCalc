@@ -9,7 +9,8 @@ public class GUI {
     public JLabel debugLabel, debugLabel2;
     SpringLayout layout = new SpringLayout();
     Container pane = new Container(), sPane;
-    TextField equation;
+    TextField equationField,InputNumb;
+    JComboBox chemicalDrop, chemicalDrop2;
     int xc, yc;
     boolean debug = true;
     
@@ -80,22 +81,72 @@ public class GUI {
         
         
         final JLabel output = new JLabel();
-        output.setText("This is what the JLabel looks like now: Empty");
+        output.setText("Enter an equation");
         output.setSize(10,50);
         
-        equation = new TextField();
-        equation.setColumns(50);
-     
-        Layout(equation, 100, 150);
-        Layout(output, 100, 100);
-        equation.addKeyListener(new KeyListener() {
+        
+        final JLabel Ihave = new JLabel();
+        Ihave.setText("I have                                                 of");
+        Ihave.setSize(10,10);
+        
+        final JLabel HowMuch = new JLabel();
+        HowMuch.setText("How Much");
+        HowMuch.setSize(10,10);
+        
+        final JLabel WillINeed = new JLabel();
+        WillINeed.setText("Will I Have?");
+        WillINeed.setSize(10,10);
+        
+        equationField = new TextField();
+        equationField.setColumns(50);     
+        
+        InputNumb = new TextField();
+        InputNumb.setColumns(5);
+        
+        
+        final JComboBox units = new JComboBox();
+        units.addItem("moles");
+        units.addItem("grams");
+        units.addItem("liters");
+        units.addItem("milliliters");
+        units.addItem("atoms");
+        units.addItem("molecules");
+        units.setSelectedItem(null);
+        
+        chemicalDrop = new JComboBox();
+        chemicalDrop.setMaximumRowCount(5);
+        chemicalDrop.setPreferredSize(new Dimension(65,20));
+        
+        chemicalDrop2 = new JComboBox();
+        chemicalDrop2.setMaximumRowCount(5);
+        chemicalDrop2.setPreferredSize(new Dimension(65,20));
+        
+        final JComboBox form = new JComboBox();
+        form.addItem("gas");
+        form.addItem("liquid");
+        form.addItem("solid");
+        form.setSelectedItem(null);
+        
+        //(Left/right, up/down)
+        Layout(equationField, 100, 170);
+        Layout(InputNumb, 140, 50);
+        Layout(chemicalDrop, 295, 50);
+        Layout(chemicalDrop2, 155, 90);
+        Layout(units, 200, 50);
+        Layout(form, 375, 50);
+        Layout(output, 100, 120);
+        Layout(Ihave, 100, 53);
+        Layout(HowMuch, 100, 93);
+        Layout(WillINeed, 225, 93);
+        
+        equationField.addKeyListener(new KeyListener() {
 
             @Override
             public void keyTyped(KeyEvent e) {
                 char z = e.getKeyChar();
                 //System.out.print(z);
-                boolean good = (z == '+') || (z == '-') || (z == '.') ||
-                        (z >= 48 & z <= 57) || (z >= 65 & z <= 90) 
+                boolean good = (z == '+') || (z == '-') || (z == '.') 
+                        || (z >= 48 & z <= 57) || (z >= 65 & z <= 90) 
                         || (z >= 97 & z <= 122) || (z == 91) || (z == 93)
                         || (z == 60) || (z == 62) || (z == 32) || (z == 40)
                         || (z == 41);
@@ -127,13 +178,11 @@ public class GUI {
                 //output.setText(equation.getText());
                 
                 //SPLITTING ALGORTHYTHM!
-                String templist[] = equation.getText().split("-->|\\s+\\+\\s+|<-->|\\s+");
-                ArrayList<String> chemicals = new ArrayList<>(Arrays.asList(templist));
+                String veryTempList[] = equationField.getText().split("-->|\\s+\\+\\s+|<-->|\\s+");
+                ArrayList<String> chemicals = new ArrayList<>(Arrays.asList(veryTempList));
                 chemicals.remove(" ");
                 chemicals.remove("");
                 chemicals.remove("\n");
-                chemicals.remove(" ");
-                chemicals.remove("");
                 System.out.println(chemicals.toString());
                 ArrayList<String> errors = new ArrayList<>();
                 
@@ -245,7 +294,7 @@ public class GUI {
                                 trueBig = trueBig + tempList[il];
                             }
                             il++;
-                            if(templist.length >= il) break;
+                            if(veryTempList.length >= il) break;
                         }
                             
                             
@@ -272,11 +321,47 @@ public class GUI {
                     bigNumb = "";
                     
                     
-                }//end of loop for this individual chemical\
+                }//end of loop for this individual chemical
                 System.out.println("\n==========END OF THE LINE==========");
-                if(errors.isEmpty()) {         
+                
+                
+                
+                        
+                int chemcount = 0;
+                for(String a : chemicals) {
+                    boolean Hgtest = false;
+                    for(char c : a.toCharArray()) {
+                        if(Character.isLetter(c)) Hgtest = true;
+                    }
+                    if(Hgtest == false){
+                        if(chemcount > 0) {
+                            String apples = chemicals.get(chemcount - 1);
+                            chemicals.set(chemcount - 1, apples + chemicals.get(chemcount));
+                            chemicals.set(chemcount, "");
+                        } else {
+                            errors.add("Ion number given without parent chemical");
+                            chemicals.set(chemcount, "");
+                            System.out.println(errors.toString());
+                        }
+                    }
+                    chemcount++;
+                }
+                
+                
+                chemicalDrop.removeAllItems();
+                chemicalDrop2.removeAllItems();
+                if(errors.isEmpty()) {
+                for(String a: chemicals) {
+                    chemicalDrop.addItem(a);
+                    chemicalDrop2.addItem(a);
+                    
+                }
+                chemicalDrop.removeItem("");
+                chemicalDrop2.removeItem("");
                 int i = 0;
                 String stringbuild = "";
+                
+                chemicals.remove("");
                 for(String s : chemicals){
                     
                     if(stringbuild.isEmpty()) {
@@ -304,8 +389,43 @@ public class GUI {
                
             }//end of key release  
         });
-        stoic.add(equation);
+        InputNumb.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent ke) {
+               char z = ke.getKeyChar();
+               //Burn?
+               boolean burn = !Character.isDigit(z) && !(z == 8) 
+                       && !(z == 46);//burn if its not a diget and its not a backspace
+               if(burn) {
+                   ke.consume();
+               }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if(InputNumb.getText().toCharArray().length > 7) {
+                    ke.consume();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent ke) {
+                
+            }
+        });
+        
+        stoic.add(equationField);
+        stoic.add(InputNumb);
+        stoic.add(chemicalDrop);
+        stoic.add(chemicalDrop2);
+        stoic.add(units);
+        stoic.add(form);
         stoic.add(output);
+        stoic.add(Ihave);
+        stoic.add(HowMuch);
+        stoic.add(WillINeed);
+        
     }
     //==============================ACTION LISTENERS====================================//
     

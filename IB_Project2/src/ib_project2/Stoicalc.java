@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class Stoicalc {
     static GUI gui = new GUI();
-    static Chemistry chemistry = new Chemistry();
+    static Elements chemistry = new Elements();
     static Graphing graphing = new Graphing();
     static Processing processing = new Processing();
    
