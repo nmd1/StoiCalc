@@ -97,12 +97,15 @@ public class GUI {
                 boolean good = (z == '+') || (z == '-') || (z == '.') ||
                         (z >= 48 & z <= 57) || (z >= 65 & z <= 90) 
                         || (z >= 97 & z <= 122) || (z == 91) || (z == 93)
-                        || (z == 60) || (z == 62) || (z == 32);
+                        || (z == 60) || (z == 62) || (z == 32) || (z == 40)
+                        || (z == 41);
                 boolean badGood = (z == 81) || (z == 113) ||
                         (z == 74) || (z == 106);
                 
-                if(!good) e.consume();
-                if(badGood) e.consume();
+                if(!good) e.consume(); //anything that's not in good gets consumed
+                if(badGood) e.consume(); // these sepcific characters also get consumed
+                //kinda redundent?
+                
                // if(e.getKeyChar())
                     //43 (+) 45 (-) 46 (.)
                     //81, 113, 74, 106 bad numbers
@@ -132,16 +135,15 @@ public class GUI {
                 chemicals.remove(" ");
                 chemicals.remove("");
                 System.out.println(chemicals.toString());
+                ArrayList<String> errors = new ArrayList<>();
+                
                 
                 String chem = "";
                 String ion = "";
                 String bigNumb = "";
-                boolean Hg = true;
-                boolean C = false;
                 int count = 0;
-                boolean theCarryOver = false;
                 
-                for(String a : chemicals) { //FIX CONCURRENT MODIFICATION EXCEPTION
+                for(String a : chemicals) {
                     String error = "";
                     //for each individual chemical in this equations
                     //possible strings
@@ -153,10 +155,6 @@ public class GUI {
                     
                     
                     //Start of complex algothem====================================START
-                    if(theCarryOver) {
-                        chemicals.remove(count - 1);
-                        theCarryOver = false;
-                    }
                     //corrected the "2+" error
                     int n = 0;
                     
@@ -183,24 +181,20 @@ public class GUI {
                         //finds ion numbers
                         
                         for(int j = tempList.length - 1; j >= 0; j--){
-                            int i = 0;
-                        //0-5 length: 6
-                        
-                            ion = ion + tempList[j];
+                            //0-5 length: 6
                             
-                            if(Character.isAlphabetic(tempList[j])) {
-                                Hg = false;
-                                
-                            }
-                            //^to figure out if's a legit ion or 
-                            //just 2+ 
-                            
-                            if(i == 1){
+                            if(Character.isLetter(tempList[j]) ) {
                                 chemNumbL = j;
                                 break;
-                            }
-                            i++;
+                            } 
+                            ion = ion + tempList[j];
+                            
+                            //^to figure out if's a legit ion or 
+                            //just 2+ 
                         }
+                        //end of loop
+                        
+                        
                     } else if (n > 1) {
                         error = error + "More than one plus or minus\n";
                     } else {
@@ -215,31 +209,22 @@ public class GUI {
                    System.out.println("THIS IS 'ION'" + ion);
                    
                    //SuperScript Number
-                   for(int i = 0; i < chemNumbL; i++) {
-                       if(Character.isLetter(tempList[i])) {
+                   for(int i = 0; i < tempList.length; i++) { 
+                       
+                        if(Character.isLetter(tempList[i])) {
                            chemNumbF = i;
                            break;
-                       }
-                       bigNumb = bigNumb + tempList[i];
-                       
-                   }
-                   bigNumb = new StringBuilder(bigNumb).reverse().toString();
-                   //end 
-                   
-                    if(n == 1) {
-                        //correction for ion number lettering
-                        chemNumbF = chemNumbF + 1;
-                    }
-                    
+                        }
+                        
+                        bigNumb = bigNumb + tempList[i];
+
+                        if(i == tempList.length - 1) {
+                            chemNumbF = tempList.length;
+                        }
+                   }                    
                     
                     for(int i = chemNumbF; i < chemNumbL + 1; i++) {
                         chem = chem + tempList[i];
-                        
-                        if(Character.isDigit(tempList[i])) {
-                                C = true;
-                            }
-                            //^to figure out if's a legit atom or 
-                            //just "2"
                             
                     }
                     System.out.println("THIS IS BEING SUBSCRIPTED:" + chem);  
@@ -247,6 +232,7 @@ public class GUI {
                     //ALL OF THIS IS TO PREVENT THE COEFFICENT FROM BEING SUB'ED
                     //the first number in the chemical.
                     String trueBig = "";
+                    if(!chem.isEmpty())
                     if(Character.isDigit(chem.charAt(0))) {
                         //get every number up until the first character.
                         boolean iloop = true;
@@ -259,59 +245,36 @@ public class GUI {
                                 trueBig = trueBig + tempList[il];
                             }
                             il++;
+                            if(templist.length >= il) break;
                         }
                             
                             
                     }
                     //END OF ALL OF THIS
                     chem = subScript(chem); 
-                    chem = trueBig + chem;
-                    //WORK ON THIS...NOT YET COMPLETE
-                    //
-                    bigNumb = "";        
-                    for(int i = 0; i < tempList.length - 1; i++) {
-                        //find leading numbers and impliment them!\
-                        if(Character.isDigit(tempList[i])){
-                            bigNumb = bigNumb + tempList[i];
-                        } else {
-                            break;
-                        }  
-                    }
+                    
                     
                     System.out.println("||||"+ chemicals.get(count) + ion +"||||");
+                    
+                    if(ion.equals(superScript(bigNumb))) chemicals.set(count, chem + ion);
+                    else chemicals.set(count, bigNumb + chem + ion);
+                    
                     System.out.println("Count:" + count);
                     System.out.println("Chemicals:" + chemicals.toString());
+                    if(!error.equals("")) errors.add(error + "@" + chemicals.get(count));
+                    System.out.println("Ion: " + ion);
+                    System.out.println("BigNumber: " + bigNumb);
+                    System.out.println("Chem: " + chem);
                     
-                    if(ion.equals("")) {
-                        chemicals.set(count, bigNumb + chem);
-                        System.out.println("Ion is empty");
-                    } else if(Hg){
-                        chemicals.set(count, chem + superScript(chemicals.get(count)));
-                        System.out.println("went into HG");
-                    } else if(C){
-                        chemicals.set(count, bigNumb);
-                        System.out.println("Went into C");
-                    } else /*if(!ion.equals("") && !Hg)*/{
-                        chemicals.set(count, bigNumb + ion);
-                        System.out.println("Went into else");
-                    }
                     count++;
                     chem = "";
                     ion = "";
                     bigNumb = "";
-                    Hg = true;
-                    C = false;
                     
-                    System.out.println(error);
-                    //WORK ON THIS==================================================END
-                    //WORK ON THIS==================================================END
-                    
-                    //maybe impliment recusion?????
                     
                 }//end of loop for this individual chemical\
                 System.out.println("\n==========END OF THE LINE==========");
-                output.setText(chemicals.toString());
-                
+                if(errors.isEmpty()) {         
                 int i = 0;
                 String stringbuild = "";
                 for(String s : chemicals){
@@ -332,7 +295,9 @@ public class GUI {
                     i++;
                 }
                 output.setText(stringbuild);
-
+                } else {
+                    output.setText(errors.toString());
+                }
                 Font fs = new Font("Comic Sans", Font.PLAIN , 30);
                 output.setFont(fs);
                 
@@ -453,8 +418,14 @@ public class GUI {
 
                 @Override
                 public void componentMoved(ComponentEvent e) {
-                    Point d = j.getLocationOnScreen();
-
+                    Point d = null;
+                    try{
+                        d = j.getLocationOnScreen();
+                    } catch (java.awt.IllegalComponentStateException er) {
+                        System.out.println("ERROR: " + er.getMessage());
+                        d = new Point(0,0);
+                    }
+                    
                     debugLabel2.setText(d.toString());
                 }
 
