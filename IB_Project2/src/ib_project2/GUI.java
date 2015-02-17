@@ -178,217 +178,38 @@ public class GUI {
                 //output.setText(equation.getText());
                 
                 //SPLITTING ALGORTHYTHM!
-                String veryTempList[] = equationField.getText().split("-->|\\s+\\+\\s+|<-->|\\s+");
-                ArrayList<String> chemicals = new ArrayList<>(Arrays.asList(veryTempList));
-                chemicals.remove(" ");
-                chemicals.remove("");
-                chemicals.remove("\n");
-                System.out.println(chemicals.toString());
-                ArrayList<String> errors = new ArrayList<>();
-                
-                
-                String chem = "";
-                String ion = "";
-                String bigNumb = "";
-                int count = 0;
-                
-                for(String a : chemicals) {
-                    String error = "";
-                    //for each individual chemical in this equations
-                    //possible strings
-                    //Cu(H2O)2+
-                    //Na+
-                    //Na1+
-                    char tempList[] = a.toCharArray();
-                    
-                    
-                    
-                    //Start of complex algothem====================================START
-                    //corrected the "2+" error
-                    int n = 0;
-                    
-                    boolean plus = false, minus = false;
-                    for(int i = 0; i < a.length(); i++) {
-                        if (a.charAt(i) == '+') {
-                           n++;
-                           plus = true;
-                        }
-                        if(a.charAt(i) == '-') {
-                            n++;
-                            minus = true;
-                        }
-                    }
-                    
-                    if(plus && minus) error = error + "Error: two types of ions\n";
-                    
-                    //boolean ionTrue = (n == 1);Not used
-                    
-                    int chemNumbL = 0;
-                    int chemNumbF = 0;
-                    
-                    if(n == 1) {
-                        //finds ion numbers
-                        
-                        for(int j = tempList.length - 1; j >= 0; j--){
-                            //0-5 length: 6
-                            
-                            if(Character.isLetter(tempList[j]) ) {
-                                chemNumbL = j;
-                                break;
-                            } 
-                            ion = ion + tempList[j];
-                            
-                            //^to figure out if's a legit ion or 
-                            //just 2+ 
-                        }
-                        //end of loop
-                        
-                        
-                    } else if (n > 1) {
-                        error = error + "More than one plus or minus\n";
-                    } else {
-                        ion = "";
-                        chemNumbL = tempList.length - 1;
-                    }
-                   
-                   
-                   
-                   ion = new StringBuilder(ion).reverse().toString();
-                   ion = Processing.superScript(ion);
-                   System.out.println("THIS IS 'ION'" + ion);
-                   
-                   //SuperScript Number
-                   for(int i = 0; i < tempList.length; i++) { 
-                       
-                        if(Character.isLetter(tempList[i])) {
-                           chemNumbF = i;
-                           break;
-                        }
-                        
-                        bigNumb = bigNumb + tempList[i];
-
-                        if(i == tempList.length - 1) {
-                            chemNumbF = tempList.length;
-                        }
-                   }                    
-                    
-                    for(int i = chemNumbF; i < chemNumbL + 1; i++) {
-                        chem = chem + tempList[i];
-                            
-                    }
-                    System.out.println("THIS IS BEING SUBSCRIPTED:" + chem);  
-                    
-                    //ALL OF THIS IS TO PREVENT THE COEFFICENT FROM BEING SUB'ED
-                    //the first number in the chemical.
-                    String trueBig = "";
-                    if(!chem.isEmpty())
-                    if(Character.isDigit(chem.charAt(0))) {
-                        //get every number up until the first character.
-                        boolean iloop = true;
-                        int il = 0;
-                        while (iloop) {
-                            if(Character.isAlphabetic(tempList[il])) {
-                                iloop = false;
-                                break;
-                            } else {
-                                trueBig = trueBig + tempList[il];
-                            }
-                            il++;
-                            if(veryTempList.length >= il) break;
-                        }
-                            
-                            
-                    }
-                    //END OF ALL OF THIS
-                        chem = Processing.subScript(chem); 
-                    
-                    
-                    System.out.println("||||"+ chemicals.get(count) + ion +"||||");
-                    
-                    if(ion.equals(Processing.superScript(bigNumb))) chemicals.set(count, chem + ion);
-                    else chemicals.set(count, bigNumb + chem + ion);
-                    
-                    System.out.println("Count:" + count);
-                    System.out.println("Chemicals:" + chemicals.toString());
-                    if(!error.equals("")) errors.add(error + "@" + chemicals.get(count));
-                    System.out.println("Ion: " + ion);
-                    System.out.println("BigNumber: " + bigNumb);
-                    System.out.println("Chem: " + chem);
-                    
-                    count++;
-                    chem = "";
-                    ion = "";
-                    bigNumb = "";
-                    
-                    
-                }//end of loop for this individual chemical
-                System.out.println("\n==========END OF THE LINE==========");
-                
-                
-                
-                        
-                int chemcount = 0;
-                for(String a : chemicals) {
-                    boolean Hgtest = false;
-                    for(char c : a.toCharArray()) {
-                        if(Character.isLetter(c)) Hgtest = true;
-                    }
-                    if(Hgtest == false){
-                        if(chemcount > 0) {
-                            String apples = chemicals.get(chemcount - 1);
-                            chemicals.set(chemcount - 1, apples + chemicals.get(chemcount));
-                            chemicals.set(chemcount, "");
-                        } else {
-                            errors.add("Ion number given without parent chemical");
-                            chemicals.set(chemcount, "");
-                            System.out.println(errors.toString());
-                        }
-                    }
-                    chemcount++;
-                }
+                if(!equationField.getText().isEmpty()) {
+                ArrayList<String> chemicals = Processing.CEPS(equationField.getText());
                 
                 
                 chemicalDrop.removeAllItems();
                 chemicalDrop2.removeAllItems();
-                if(errors.isEmpty()) {
-                for(String a: chemicals) {
-                    chemicalDrop.addItem(a);
-                    chemicalDrop2.addItem(a);
-                    
-                }
-                chemicalDrop.removeItem("");
-                chemicalDrop2.removeItem("");
-                int i = 0;
-                String stringbuild = "";
                 
-                chemicals.remove("");
-                for(String s : chemicals){
-                    
-                    if(stringbuild.isEmpty()) {
-                        stringbuild = s;
-                    } else {
-                        stringbuild = stringbuild + ", " + s;
+                if(!chemicals.get(0).equals("ERRORS")) {//fix this exception problem
+                    for(String a: chemicals) {
+                        chemicalDrop.addItem(a);
+                        chemicalDrop2.addItem(a);
                     }
-                    /*
-                    if(i == 2) {
-                        stringbuild = stringbuild + "→ " + s;
-                    } else if((i + 1) == 2){
-                        stringbuild = stringbuild + s ;
-                    } else {
-                        stringbuild = stringbuild + s + " + ";
-                    } */
-                    i++;
+                    chemicalDrop.removeItem("");
+                    chemicalDrop2.removeItem("");
                 }
-                output.setText(stringbuild);
-                } else {
-                    output.setText(errors.toString());
+                
+                output.setText("");
+                String outputText = Processing.CEDS(chemicals);
+                if(outputText.equals("Ion number given without parent chemical")) {
+                    chemicalDrop.removeAllItems();
+                    chemicalDrop2.removeAllItems();
                 }
+                
                 Font fs = new Font("Comic Sans", Font.PLAIN , 30);
                 output.setFont(fs);
-                
+                output.setText(outputText);
+                }
                
             }//end of key release  
         });
+        
+        
         InputNumb.addKeyListener(new KeyListener() {
 
             @Override
@@ -404,6 +225,7 @@ public class GUI {
 
             @Override
             public void keyPressed(KeyEvent ke) {
+                //doesn't work. fix.
                 if(InputNumb.getText().toCharArray().length > 7) {
                     ke.consume();
                 }

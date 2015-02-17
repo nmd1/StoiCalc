@@ -1,6 +1,10 @@
 package ib_project2;
 
+import ChemNode.Node;
+import ChemNode.NodeProcessing;
+import ChemNode.Substance;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -13,7 +17,7 @@ import java.util.ArrayList;
  * 
  */
 public class Processing {
-    
+    static Node mainNode;
     public static String atomicSearch(int i) {
         for(Elements e : Chemistry.elements) {
             if(e.atomicNumber == i) return e.name;
@@ -136,5 +140,266 @@ public class Processing {
             mass = mass + (tempMass * binary[1]);
         }
         return mass;
+    }
+    public static ArrayList<String> CEPS(String equationField) {
+        //Chemical Equation Parsing System
+        String reactProd[] = equationField.split("-->|<-->");
+        String reactants = reactProd[0];
+        
+        String pString = reactants;
+        if(reactProd.length > 1) {
+            
+            pString = pString + reactProd[1];
+            //reactants + products
+        }
+        
+        int productAfter = reactProd[0].split("\\s+\\+\\s+|\\s|\\s+\\+").length - 1;
+        
+        String veryTempList[] = pString.split("\\s+\\+\\s+|\\s|\\s+\\+");
+        
+        
+        //do this next part twice 
+
+        ArrayList<String> chemicals = new ArrayList<>(Arrays.asList(veryTempList));
+        if(reactProd.length > 2) {
+            chemicals.add(0, "ERROR");
+            chemicals.add(1, "More than one Arrow");
+            return chemicals;
+        }
+        
+        
+        chemicals.remove(" ");
+        chemicals.remove("");
+        chemicals.remove("\n");
+        System.out.println(chemicals.toString());
+        ArrayList<String> errors = new ArrayList<>();
+
+
+        String chem = "";
+        String ion = "";
+        String bigNumb = "";
+        int count = 0;
+        Node equate = null;
+        
+        //=====================THE LOOP==========================
+        for(String a : chemicals) {
+            
+            String error = "";
+            //for each individual chemical in this equations
+            //possible strings
+            //Cu(H2O)2+
+            //Na+
+            //Na1+
+            char tempList[] = a.toCharArray();
+            //Start of complex algothem====================================START
+            int n = 0;
+
+            boolean plus = false, minus = false;
+            for(int i = 0; i < a.length(); i++) {
+                if (a.charAt(i) == '+') {
+                   n++;
+                   plus = true;
+                }
+                if(a.charAt(i) == '-') {
+                    n++;
+                    minus = true;
+                }
+            }
+
+            if(plus && minus) error = error + "Error: two types of ions\n";
+
+            //boolean ionTrue = (n == 1);Not used
+
+            int chemNumbL = 0;
+            int chemNumbF = 0;
+
+            if(n == 1) {
+                //finds ion numbers
+
+                for(int j = tempList.length - 1; j >= 0; j--){
+                    //0-5 length: 6
+
+                    if(Character.isLetter(tempList[j]) ) {
+                        chemNumbL = j;
+                        break;
+                    } 
+                    ion = ion + tempList[j];
+
+                    //^to figure out if's a legit ion or 
+                    //just 2+ 
+                }
+                //end of loop
+
+
+            } else if (n > 1) {
+                error = error + "More than one plus or minus\n";
+            } else {
+                ion = "";
+                chemNumbL = tempList.length - 1;
+            }
+
+
+
+           ion = new StringBuilder(ion).reverse().toString();
+           ion = Processing.superScript(ion);
+           System.out.println("THIS IS 'ION'" + ion);
+
+           //SuperScript Number
+           for(int i = 0; i < tempList.length; i++) { 
+
+                if(Character.isLetter(tempList[i])) {
+                   chemNumbF = i;
+                   break;
+                }
+
+                bigNumb = bigNumb + tempList[i];
+
+                if(i == tempList.length - 1) {
+                    chemNumbF = tempList.length;
+                }
+           }                    
+
+            for(int i = chemNumbF; i < chemNumbL + 1; i++) {
+                chem = chem + tempList[i];
+
+            }
+            System.out.println("THIS IS BEING SUBSCRIPTED:" + chem);  
+
+            //ALL OF THIS IS TO PREVENT THE COEFFICENT FROM BEING SUB'ED
+            //the first number in the chemical.
+            String trueBig = "";
+            if(!chem.isEmpty())
+            if(Character.isDigit(chem.charAt(0))) {
+                //get every number up until the first character.
+                boolean iloop = true;
+                int il = 0;
+                while (iloop) {
+                    if(Character.isAlphabetic(tempList[il])) {
+                        iloop = false;
+                        break;
+                    } else {
+                        trueBig = trueBig + tempList[il];
+                    }
+                    il++;
+                    if(veryTempList.length >= il) break;
+                }
+
+                
+            }
+            //END OF ALL OF THIS
+                chem = Processing.subScript(chem); 
+
+
+            System.out.println("||||"+ chemicals.get(count) + ion +"||||");
+            
+            
+            if(ion.equals(Processing.superScript(bigNumb))) chemicals.set(count, chem + ion);
+            else  chemicals.set(count, bigNumb + chem + ion);
+            //Na+ + Cl- -->
+
+            System.out.println("Count:" + count);
+            chemicals.remove(""); 
+            chemicals.remove(" ");
+            
+            System.out.println("Chemicals:" + chemicals.toString());
+            if(!error.equals("")) errors.add(error + "@" + chemicals.get(count));
+            System.out.println("Ion: " + ion);
+            System.out.println("BigNumber: " + bigNumb);
+            System.out.println("Chem: " + chem);
+            
+            //Node stuff.
+            Substance s;
+            if(count > productAfter) {
+                s = new Substance(chemicals.get(count), ion, bigNumb, chem, false, count);   
+            } else { 
+                s = new Substance(chemicals.get(count), ion, bigNumb, chem, true, count); 
+            }
+            equate = NodeProcessing.insertAtEnd(equate, s);
+            NodeProcessing.print(equate, "Equation");
+            mainNode = equate;
+            
+            //System.out.println(s.toString());
+            count++;
+            chem = "";
+            ion = "";
+            bigNumb = "";
+            
+            
+
+        }//end of loop for this individual chemical
+        System.out.println("\n==========END OF THE LINE==========");
+        
+        
+        if(errors.isEmpty())return chemicals;
+        else{ 
+            errors.add(0, "ERRORS");
+            return errors;
+        }
+    }
+    
+    public static String CEDS(ArrayList<String> chemicals) {
+        
+        //Chemical Equation Display System
+        if(chemicals.get(0).equals("ERRORS")) return chemicals.toString();
+        
+        int chemcount = 0;
+        for(String a : chemicals) {
+            boolean Hgtest = false;
+            for(char c : a.toCharArray()) {
+                if(Character.isLetter(c)) Hgtest = true;
+            }
+            if(Hgtest == false){
+                if(chemcount > 0) {
+                    String apples = chemicals.get(chemcount - 1);
+                    chemicals.set(chemcount - 1, apples + chemicals.get(chemcount));
+                    chemicals.set(chemcount, "");
+                } else {
+                    return "Ion number given without parent chemical"; //2+, Na,...
+                    /*chemicals.set(chemcount, "");
+                    System.out.println(errors.toString());*/
+                }
+            }
+            chemcount++;
+        }
+
+
+        
+        int i = 0;
+
+
+        chemicals.remove("");
+        
+        Node p = mainNode;
+        String StringBuilder = "";
+        boolean firstP = true; boolean first = true;
+
+            Node q = p;
+        
+        if(q == null) {
+            return "";
+        }
+        boolean flag = true;
+        while(flag) {
+            if(first) first = false;
+            else if(q.getChemical().isReact() == false && firstP) {
+                StringBuilder = StringBuilder + " → ";
+                firstP = false;
+            } else StringBuilder = StringBuilder + " + ";
+            
+            StringBuilder = StringBuilder + q.getChemical().getSubstance();
+                
+            if(q.getNext() == null) {
+                break;
+            }
+            q = q.getNext();
+        }
+        /*
+        }//later use ↔ for equlibrium
+        if(Products.isEmpty()) {
+            return Reactants;
+        } else {
+           return Reactants +" → "+ Products; 
+        }*/
+        return StringBuilder;
     }
 }

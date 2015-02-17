@@ -25,7 +25,7 @@ public class Substance {
         base = based;
         reactant = reac;
         index = i;
-        elementList = Processing.elementLister(coefficient);
+        elementList = Processing.elementLister(base);
         molarMass = Processing.molarMass(elementList);
         //here is where molarMass and elementList is calculated.
     }

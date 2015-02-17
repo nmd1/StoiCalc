@@ -25,7 +25,7 @@ public class Stoicalc {
             Logger.getLogger(Stoicalc.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        //DEBUG
+        /*DEBUG
         String test = "C8H10N4O2";
         
         int[][] tested = Processing.elementLister(test);
@@ -38,7 +38,7 @@ public class Stoicalc {
         }
         
         System.out.println(Processing.molarMass(tested) + "g/mol");
-        //DEBUG
+        //DEBUG*/
         
         //Major Clusters:
         //GUI: handles all of the visual information and displaying things to the user:
@@ -50,6 +50,6 @@ public class Stoicalc {
         //This file? Handles opening and closing the program.
         //maybe saved data will be kept here? who knows.
         
-        //gui.GUI();
+        gui.GUI();
     }
 }
