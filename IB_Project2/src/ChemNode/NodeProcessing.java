@@ -7,7 +7,7 @@ import java.util.Scanner;
  * @author nemo
  */
 public class NodeProcessing {
-    public static int lastSearch = -2;
+    public static Substance lastSearch;
     public static int lastCount = -2;
     public static long lastSortTime = -1;
     
@@ -112,11 +112,7 @@ public class NodeProcessing {
         }
     }
     
-    public static Node search(Node p) {
-        Scanner s = new Scanner(System.in);
-        
-        System.out.println("Insert a planet name to search: ");
-        String PlanetSearch = s.next();
+    public static Node search(Node p, String name) {
         
         
         Node q = p;
@@ -124,12 +120,12 @@ public class NodeProcessing {
         int counter = 0;
         while(loop) {
             counter++; //start off with 1
-            if(q.getChemical().getSubstance().equalsIgnoreCase(PlanetSearch)) {
-                lastSearch = q.getChemical().getIndex();
+            if(q.getChemical().getSubstance().equalsIgnoreCase(name)) {
+                lastSearch = q.getChemical();
                 loop = false;
             } else {
                 if(q.getNext() == null){ 
-                lastSearch = -1;//not found 
+                lastSearch = null;//not found 
                 return p;
                 }
                 q = q.getNext(); 

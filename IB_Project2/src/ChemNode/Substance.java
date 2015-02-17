@@ -21,7 +21,8 @@ public class Substance {
     public Substance(String sub, String ion2, String co, String based, boolean reac, int i) {
         name = sub;
         ion = ion2;
-        coefficient = co;
+        if(co.isEmpty()) coefficient = "1";
+        else coefficient = co;
         base = based;
         reactant = reac;
         index = i;

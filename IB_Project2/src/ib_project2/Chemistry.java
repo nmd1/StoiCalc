@@ -7,7 +7,9 @@ package ib_project2;
 public class Chemistry {
     //static:accessed via Chemistry.Hydrogen
     //nonstatic: accessed via Chemistry c = new Chemistry(); c.Hydrigen;
-    //there's a SHITTON OF ELELEMNTS OHMYGOD
+    
+    final static Double avogadro = 6.0221413 * Math.pow(10, 23);
+    
     public static Elements elements[] = {new Elements("Electron", "e", 0, 5.4857990946 * Math.pow(10, -4), -1),
         new Elements("Hydrogen", "H", 1, 1.0079, 0.09),
         new Elements("Helium", "He", 2, 4.0026, 0.18),//Noble gas

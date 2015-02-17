@@ -336,7 +336,6 @@ public class Processing {
             return errors;
         }
     }
-    
     public static String CEDS(ArrayList<String> chemicals) {
         
         //Chemical Equation Display System
@@ -401,5 +400,42 @@ public class Processing {
            return Reactants +" → "+ Products; 
         }*/
         return StringBuilder;
+    }
+    
+    
+    //CALCULATIONS
+    public static double molesToMoles(double moles, String beg, String fin) {
+        NodeProcessing.search(mainNode, beg);
+        int a = Integer.parseInt(NodeProcessing.lastSearch.getCo());
+        NodeProcessing.search(mainNode, fin);
+        int b = Integer.parseInt(NodeProcessing.lastSearch.getCo());
+        
+        double c = (double)a / b;
+        
+        return moles * c;
+    }
+    public static double gramsToMoles(double grams, String sub) {
+        NodeProcessing.search(mainNode, sub);
+        Double a = NodeProcessing.lastSearch.getMolarMass();
+        double answer = grams / a;
+        return answer;
+    }
+    public static double molesToGrams(double moles, String sub) {
+        NodeProcessing.search(mainNode, sub);
+        Double a = NodeProcessing.lastSearch.getMolarMass();
+        double answer = moles * a;
+        return answer;
+    }
+    public static double gramsTograms(double grams, String beg, String fin) {
+        double one = gramsToMoles(grams, beg);
+        double two = molesToMoles(one, beg, fin);
+        double three = molesToGrams(two, fin);
+        return 3;        
+    }
+    public static double atomsToMoles(double atoms) {
+        return atoms / Chemistry.avogadro; 
+    }
+    public static double molesToAtoms(double moles) {
+        return moles * Chemistry.avogadro; 
     }
 }

@@ -6,7 +6,7 @@ import java.util.*;
 import javax.swing.*;
 public class GUI {
     public JFrame main, stoic;
-    public JLabel debugLabel, debugLabel2;
+    public JLabel debugLabel, debugLabel2,Answer;
     SpringLayout layout = new SpringLayout();
     Container pane = new Container(), sPane;
     TextField equationField,InputNumb;
@@ -97,6 +97,10 @@ public class GUI {
         WillINeed.setText("Will I Have?");
         WillINeed.setSize(10,10);
         
+        Answer = new JLabel();
+        Answer.setText("");
+        Answer.setSize(10,10);
+        
         equationField = new TextField();
         equationField.setColumns(50);     
         
@@ -138,6 +142,7 @@ public class GUI {
         Layout(Ihave, 100, 53);
         Layout(HowMuch, 100, 93);
         Layout(WillINeed, 225, 93);
+        Layout(Answer, 300, 93);
         
         equationField.addKeyListener(new KeyListener() {
 
@@ -217,7 +222,7 @@ public class GUI {
                char z = ke.getKeyChar();
                //Burn?
                boolean burn = !Character.isDigit(z) && !(z == 8) 
-                       && !(z == 46);//burn if its not a diget and its not a backspace
+                       && !(z == 46) && !(z < 32) && !(z == 127);//burn if its not a diget and its not a backspace
                if(burn) {
                    ke.consume();
                }
@@ -233,7 +238,15 @@ public class GUI {
 
             @Override
             public void keyReleased(KeyEvent ke) {
-                
+                double input = Double.parseDouble(InputNumb.getText());
+                double ans = 0;
+                if(units.getSelectedIndex() == 0) {
+                    ans = Processing.molesToMoles(input, (String)chemicalDrop.getSelectedItem(), (String)chemicalDrop2.getSelectedItem()); 
+                }
+                if(units.getSelectedIndex() == 1) {
+                    ans = Processing.gramsTograms(input, (String)chemicalDrop.getSelectedItem(), (String)chemicalDrop2.getSelectedItem()); 
+                }
+                Answer.setText(ans + "");
             }
         });
         
@@ -247,7 +260,7 @@ public class GUI {
         stoic.add(Ihave);
         stoic.add(HowMuch);
         stoic.add(WillINeed);
-        
+        stoic.add(Answer);
     }
     //==============================ACTION LISTENERS====================================//
     
