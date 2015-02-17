@@ -1,26 +1,36 @@
 package ChemNode;
 //import ib_project2.Chemistry.*;
 import ib_project2.*;
+import java.util.ArrayList;
 
 public class Substance {
+    //for example, 3C6H12O6+
     private String name;
     private String ion;
     private String coefficient;
     private String base;
     private boolean reactant; 
     private int index;
-    private double molarMass;
-    private int[][] elementList;//first number is row,which tells you how many 
+    private final double molarMass;
+    private final int[][] elementList;//first number is row,which tells you how many 
                                 //different elements are in the molecule, and
                                 //second is column. there are only 2 columns, 
                                 //first is atomic number, second is
                                 //amount of that element that the molecule has
     
-    public Substance() {
+    public Substance(String sub, String ion2, String co, String based, boolean reac, int i) {
+        name = sub;
+        ion = ion2;
+        coefficient = co;
+        base = based;
+        reactant = reac;
+        index = i;
+        elementList = Processing.elementLister(coefficient);
+        molarMass = Processing.molarMass(elementList);
         //here is where molarMass and elementList is calculated.
     }
     
-    public void setName(String s) {
+    public void setSubstance(String s) {
         name = s;
     }
     
@@ -45,7 +55,7 @@ public class Substance {
     }
     
     
-    public String getName() {
+    public String getSubstance() {
         return name;
     }
     
@@ -79,19 +89,22 @@ public class Substance {
     @Override
     public String toString() {
         String type = "";
+        String builder = "This substance contains ";
         if(reactant) {
             type = "reactant";
         } else {
             type = "product";
         }
         for(int indexValue[]: elementList) {
+            int count = 0;
+            String elementName;
+            int molecules;
             //looping through each row
             //basically index values
-            for(int info: indexValue){
-                String a = Chemistry.Hydrogen.name;
-                
-                //0-atomicNumber 1-number of that element in the substance
-            }
+            elementName = Processing.atomicSearch(indexValue[0]);
+            molecules = indexValue[1];
+            builder = builder + molecules + " " + elementName + " molecules \n";
+            
         }
         
         return "Full Name: " + name
@@ -101,21 +114,13 @@ public class Substance {
                 +"\nIt is a " + type
                 +"\nIndex: " + index
                 +"\n Molar Mass " + molarMass + "g/mol"
-                +"\nit is made up of";
+                +"\n" + builder;
         
-        
-                
                 
     }
     
-    private String placed(int i) {
-        switch(i){
-            case 1:return "1st";
-            case 2:return "2nd";
-            case 3:return "3rd";
-            default:return i+ "th";
-        }
-    }
+    
+
     
     
 }

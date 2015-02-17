@@ -8,10 +8,10 @@ package ib_project2;
  */
 public class Elements {
     public String name;
-    public static String symbol;
-    public static int atomicNumber;
-    public static double atomicWeight;
-    public static double density;
+    public String symbol;
+    public int atomicNumber;
+    public double atomicWeight;
+    public double density;
     
     public Elements(String named, String sy, int p, double gMol, double gL) {
         name = named;

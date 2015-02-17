@@ -254,7 +254,7 @@ public class GUI {
                    
                    
                    ion = new StringBuilder(ion).reverse().toString();
-                   ion = superScript(ion);
+                   ion = Processing.superScript(ion);
                    System.out.println("THIS IS 'ION'" + ion);
                    
                    //SuperScript Number
@@ -300,12 +300,12 @@ public class GUI {
                             
                     }
                     //END OF ALL OF THIS
-                    chem = subScript(chem); 
+                        chem = Processing.subScript(chem); 
                     
                     
                     System.out.println("||||"+ chemicals.get(count) + ion +"||||");
                     
-                    if(ion.equals(superScript(bigNumb))) chemicals.set(count, chem + ion);
+                    if(ion.equals(Processing.superScript(bigNumb))) chemicals.set(count, chem + ion);
                     else chemicals.set(count, bigNumb + chem + ion);
                     
                     System.out.println("Count:" + count);
@@ -432,35 +432,7 @@ public class GUI {
     
     //===============================HELPER METHODS=====================================//
     
-    private static String superScript(String str) {
-        str = str.replaceAll("0", "⁰");
-        str = str.replaceAll("1", "¹");
-        str = str.replaceAll("2", "²");
-        str = str.replaceAll("3", "³");
-        str = str.replaceAll("4", "⁴");
-        str = str.replaceAll("5", "⁵");
-        str = str.replaceAll("6", "⁶");
-        str = str.replaceAll("7", "⁷");
-        str = str.replaceAll("8", "⁸");
-        str = str.replaceAll("9", "⁹");
-        str = str.replaceAll("\\+","⁺"); 
-        str = str.replaceAll("-","⁻");  
-        return str;
-    }
 
-    private static String subScript(String str) {
-        str = str.replaceAll("0", "₀");
-        str = str.replaceAll("1", "₁");
-        str = str.replaceAll("2", "₂");
-        str = str.replaceAll("3", "₃");
-        str = str.replaceAll("4", "₄");
-        str = str.replaceAll("5", "₅");
-        str = str.replaceAll("6", "₆");
-        str = str.replaceAll("7", "₇");
-        str = str.replaceAll("8", "₈");
-        str = str.replaceAll("9", "₉");
-        return str;
-    }
     private void newButton(Button b, String text, int x, int y) {
         b = new Button();
         b.setLabel(text);

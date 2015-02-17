@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class Stoicalc {
     static GUI gui = new GUI();
-    static Elements chemistry = new Elements();
+    //static Elements chemistry = new Elements();
     static Graphing graphing = new Graphing();
     static Processing processing = new Processing();
    
@@ -24,7 +24,22 @@ public class Stoicalc {
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.getLogger(Stoicalc.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
+        //DEBUG
+        String test = "C8H10N4O2";
+        
+        int[][] tested = Processing.elementLister(test);
+        
+        for(int row[] : tested) {
+            for(int c: row){
+                System.out.print(c + "   ");
+            }
+            System.out.println();
+        }
+        
+        System.out.println(Processing.molarMass(tested) + "g/mol");
+        //DEBUG
+        
         //Major Clusters:
         //GUI: handles all of the visual information and displaying things to the user:
         //String processing: process chemical equations 
@@ -35,6 +50,6 @@ public class Stoicalc {
         //This file? Handles opening and closing the program.
         //maybe saved data will be kept here? who knows.
         
-        gui.GUI();
+        //gui.GUI();
     }
 }
