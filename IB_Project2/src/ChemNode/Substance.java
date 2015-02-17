@@ -17,6 +17,7 @@ public class Substance {
                                 //second is column. there are only 2 columns, 
                                 //first is atomic number, second is
                                 //amount of that element that the molecule has
+    private final int atoms;
     
     public Substance(String sub, String ion2, String co, String based, boolean reac, int i) {
         name = sub;
@@ -28,6 +29,7 @@ public class Substance {
         index = i;
         elementList = Processing.elementLister(base);
         molarMass = Processing.molarMass(elementList);
+        atoms = Processing.countAtoms(elementList);
         //here is where molarMass and elementList is calculated.
     }
     
@@ -85,6 +87,9 @@ public class Substance {
     public int[][] getElementList() {
         return elementList;
     }
+    public int getAtoms() {
+        return atoms;
+    }
     
     
     @Override
@@ -102,8 +107,8 @@ public class Substance {
             int molecules;
             //looping through each row
             //basically index values
-            elementName = Processing.atomicSearch(indexValue[0]);
-            molecules = indexValue[1];
+            elementName = Processing.atomicSearch(indexValue[0]); //Nolecule
+            molecules = indexValue[1]; //number of substances
             builder = builder + molecules + " " + elementName + " molecules \n";
             
         }

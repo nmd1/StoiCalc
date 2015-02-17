@@ -141,6 +141,18 @@ public class Processing {
         }
         return mass;
     }
+    public static int countAtoms(int[][] list) {
+        int count = 0;
+        for(int indexValue[]: list) {
+            int molecules;
+            //looping through each row
+            //basically index values
+            molecules = indexValue[1]; //number of substances
+            count = count + molecules;
+            
+        }
+        return count;
+    }
     public static ArrayList<String> CEPS(String equationField) {
         //Chemical Equation Parsing System
         String reactProd[] = equationField.split("-->|<-->");
@@ -430,12 +442,31 @@ public class Processing {
         double one = gramsToMoles(grams, beg);
         double two = molesToMoles(one, beg, fin);
         double three = molesToGrams(two, fin);
-        return 3;        
+
+        return three;        
     }
-    public static double atomsToMoles(double atoms) {
-        return atoms / Chemistry.avogadro; 
+    public static double moleculesToMoles(double molecules, String sub) {
+        //fix
+        NodeProcessing.search(mainNode, sub);
+        int coef = Integer.parseInt(NodeProcessing.lastSearch.getCo());
+        return molecules / Chemistry.avogadro; 
     }
-    public static double molesToAtoms(double moles) {
-        return moles * Chemistry.avogadro; 
+    public static double molesToAtoms(double moles, String sub) {
+        NodeProcessing.search(mainNode, sub);
+        int[][] asdf = NodeProcessing.lastSearch.getElementList();
+        double one = moles * Chemistry.avogadro * NodeProcessing.lastSearch.getAtoms();
+        
+        return one;
+    }
+    public static double litersToMoles(double liters, double molarity) {
+        return liters * molarity;
+    }
+    public static double molesToLiters(double moles, double molarity) {
+        return moles / molarity;
+    }
+    public static double litersToLiters(double liters, double molarity, double molarity2) {
+        double one = litersToMoles(liters, molarity);
+        double two = molesToLiters(one, molarity2);
+        return two;
     }
 }

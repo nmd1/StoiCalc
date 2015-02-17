@@ -9,7 +9,7 @@ public class GUI {
     public JLabel debugLabel, debugLabel2,Answer;
     SpringLayout layout = new SpringLayout();
     Container pane = new Container(), sPane;
-    TextField equationField,InputNumb;
+    TextField equationField,InputNumb,InputC;
     JComboBox chemicalDrop, chemicalDrop2;
     int xc, yc;
     boolean debug = true;
@@ -79,6 +79,11 @@ public class GUI {
         stoic.setVisible(true);
         //setting up the window
         
+        final JLabel stoicTitleScreen = new JLabel();
+        stoicTitleScreen.setText("Stoichiometry");
+        stoicTitleScreen.setSize(10,50);
+        Font fs = new Font("Comic Sans", Font.PLAIN , 30);
+        stoicTitleScreen.setFont(fs);
         
         final JLabel output = new JLabel();
         output.setText("Enter an equation");
@@ -107,6 +112,9 @@ public class GUI {
         InputNumb = new TextField();
         InputNumb.setColumns(5);
         
+        InputC = new TextField();
+        InputC.setColumns(3);
+        InputC.setVisible(false);
         
         final JComboBox units = new JComboBox();
         units.addItem("moles");
@@ -143,6 +151,8 @@ public class GUI {
         Layout(HowMuch, 100, 93);
         Layout(WillINeed, 225, 93);
         Layout(Answer, 300, 93);
+        Layout(stoicTitleScreen, 170, 7);
+        Layout(InputC, 430, 50);
         
         equationField.addKeyListener(new KeyListener() {
 
@@ -213,8 +223,6 @@ public class GUI {
                
             }//end of key release  
         });
-        
-        
         InputNumb.addKeyListener(new KeyListener() {
 
             @Override
@@ -246,10 +254,53 @@ public class GUI {
                 if(units.getSelectedIndex() == 1) {
                     ans = Processing.gramsTograms(input, (String)chemicalDrop.getSelectedItem(), (String)chemicalDrop2.getSelectedItem()); 
                 }
+                if(units.getSelectedIndex() == 2) {
+                    ans = Processing.litersToLiters(input, Double.parseDouble(InputC.getText()), Double.parseDouble(InputC.getText()));
+                }
+                if(units.getSelectedIndex() == 3) {
+                    ans = Processing.litersToLiters((input / 1000), Double.parseDouble(InputC.getText()), Double.parseDouble(InputC.getText()));
+                }
+                if(units.getSelectedIndex() == 4) {
+                    ans = Processing.atomsToMoles(input, (String)chemicalDrop.getSelectedItem());
+                }
                 Answer.setText(ans + "");
             }
         });
-        
+        InputC.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent ge) {
+               char z = ge.getKeyChar();
+               //Burn?
+               boolean burn = !Character.isDigit(z) && !(z == 8) 
+                       && !(z == 46) && !(z < 32) && !(z == 127);//burn if its not a diget and its not a backspace
+               if(burn) {
+                   ge.consume();
+               }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+               
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                
+            }
+        });
+        form.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //if Liquid is selected, show the Concentrations box
+               if(form.getSelectedIndex() == 1) {
+                   InputC.setVisible(true);
+                   System.out.println("Hey!");
+               } else {
+                   InputC.setVisible(false);
+               }
+            }
+        });
         stoic.add(equationField);
         stoic.add(InputNumb);
         stoic.add(chemicalDrop);
@@ -261,6 +312,8 @@ public class GUI {
         stoic.add(HowMuch);
         stoic.add(WillINeed);
         stoic.add(Answer);
+        stoic.add(stoicTitleScreen);
+        stoic.add(InputC);
     }
     //==============================ACTION LISTENERS====================================//
     
