@@ -10,6 +10,10 @@ public class Chemistry {
     
     final static Double avogadro = 6.0221413 * Math.pow(10, 23);
     
+    final static Double R = 8.3144621;
+    //Source for the gas constant: 
+    //http://mutuslab.cs.uwindsor.ca/schurko/introphyschem/handouts/gasconstant.pdf
+    
     public static Elements elements[] = {new Elements("Electron", "e", 0, 5.4857990946 * Math.pow(10, -4), -1),
         new Elements("Hydrogen", "H", 1, 1.0079, 0.09),
         new Elements("Helium", "He", 2, 4.0026, 0.18),//Noble gas
@@ -142,7 +146,7 @@ public class Chemistry {
         //http://www.science.co.il/PTelements.asp
         
         //below information obtained from
-        //http://en.wikipedia.org/wiki/List_of_elements
+        //http://en.wikipedia.org/wiki/List_of_elements <--change this at one point.
         
         new Elements("Mendelevium", "Md", 101, 258, 123.45),
         new Elements("Nobelium", "No", 102, 259, 123.45),

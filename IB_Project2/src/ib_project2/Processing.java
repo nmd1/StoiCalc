@@ -415,7 +415,54 @@ public class Processing {
     }
     
     
+    public static double calculate() {
+
+        double ans = -1;
+        if(GUI.InputNumb.getText().isEmpty()) return -1;
+        double input = Double.parseDouble(GUI.InputNumb.getText());
+        System.out.println(GUI.units);
+        if(GUI.units.getSelectedIndex() == 0) {
+                //moles, starting substance, ending substance
+                ans = Processing.molesToMoles(input, (String)GUI.chemicalDrop.getSelectedItem(), (String)GUI.chemicalDrop2.getSelectedItem()); 
+            }
+            if(GUI.units.getSelectedIndex() == 1) {
+                //grams, starting substance, ending substance
+                ans = Processing.gramsTograms(input, (String)GUI.chemicalDrop.getSelectedItem(), (String)GUI.chemicalDrop2.getSelectedItem()); 
+            }
+            if(GUI.units.getSelectedIndex() == 2) {
+                //liters  original liters, starting concentration, ending concentration
+                ans = Processing.litersToLiters(input, Double.parseDouble(GUI.InputC.getText()), Double.parseDouble(GUI.InputC.getText()));
+            }
+            if(GUI.units.getSelectedIndex() == 3) {
+                //millileiters, starting substance, ending substance
+                ans = Processing.litersToLiters((input / 1000), Double.parseDouble(GUI.InputC.getText()), Double.parseDouble(GUI.InputC.getText()));
+            }
+            if(GUI.units.getSelectedIndex() == 4) {
+              ans = Processing.molesToAtoms(input, (String)GUI.chemicalDrop.getSelectedItem());
+            }
+        return ans;
+    }
+    
     //CALCULATIONS
+
+    public static double gramsToMoles(double grams, String sub) {
+        NodeProcessing.search(mainNode, sub);
+        Double a = NodeProcessing.lastSearch.getMolarMass();
+        double answer = grams / a;
+        return answer;
+    }
+    public static double moleculesToMoles(double molecules, String sub) {
+        NodeProcessing.search(mainNode, sub);
+        //int coef = Integer.parseInt(NodeProcessing.lastSearch.getCo());
+        return molecules / Chemistry.avogadro; 
+    }
+    public static double litersToMoles(double liters, double molarity) {
+        return liters * molarity;
+    }
+    public static double stpToMoles(double liters) {
+        return liters / 22.4;
+    }
+    
     public static double molesToMoles(double moles, String beg, String fin) {
         NodeProcessing.search(mainNode, beg);
         int a = Integer.parseInt(NodeProcessing.lastSearch.getCo());
@@ -426,18 +473,27 @@ public class Processing {
         
         return moles * c;
     }
-    public static double gramsToMoles(double grams, String sub) {
-        NodeProcessing.search(mainNode, sub);
-        Double a = NodeProcessing.lastSearch.getMolarMass();
-        double answer = grams / a;
-        return answer;
-    }
+    
     public static double molesToGrams(double moles, String sub) {
         NodeProcessing.search(mainNode, sub);
         Double a = NodeProcessing.lastSearch.getMolarMass();
         double answer = moles * a;
         return answer;
     }
+    public static double molesToAtoms(double moles, String sub) {
+        NodeProcessing.search(mainNode, sub);
+        //int[][] asdf = NodeProcessing.lastSearch.getElementList();
+        double one = moles * Chemistry.avogadro * NodeProcessing.lastSearch.getAtoms();
+        
+        return one;
+    }
+    public static double molesToLiters(double moles, double molarity) {
+        return moles / molarity;
+    }
+    public static double molesToSTP(double moles){
+        return moles * 22.4;
+    }
+    
     public static double gramsTograms(double grams, String beg, String fin) {
         double one = gramsToMoles(grams, beg);
         double two = molesToMoles(one, beg, fin);
@@ -445,28 +501,128 @@ public class Processing {
 
         return three;        
     }
-    public static double moleculesToMoles(double molecules, String sub) {
-        //fix
-        NodeProcessing.search(mainNode, sub);
-        int coef = Integer.parseInt(NodeProcessing.lastSearch.getCo());
-        return molecules / Chemistry.avogadro; 
-    }
-    public static double molesToAtoms(double moles, String sub) {
-        NodeProcessing.search(mainNode, sub);
-        int[][] asdf = NodeProcessing.lastSearch.getElementList();
-        double one = moles * Chemistry.avogadro * NodeProcessing.lastSearch.getAtoms();
-        
-        return one;
-    }
-    public static double litersToMoles(double liters, double molarity) {
-        return liters * molarity;
-    }
-    public static double molesToLiters(double moles, double molarity) {
-        return moles / molarity;
-    }
     public static double litersToLiters(double liters, double molarity, double molarity2) {
         double one = litersToMoles(liters, molarity);
         double two = molesToLiters(one, molarity2);
         return two;
+    }
+    public static double percentToConcentration(double percent, double density, String sub) {
+        NodeProcessing.search(mainNode, sub);
+        double molarMass = NodeProcessing.lastSearch.getMolarMass();
+        
+        return ((percent * density) / (molarMass));
+    }
+    public static double concentrationToPercent(double concentration, double density, String sub){
+        NodeProcessing.search(mainNode, sub);
+        double molarMass = NodeProcessing.lastSearch.getMolarMass();
+        return ((concentration * molarMass * 100)/(density));
+    }
+    /**
+     *
+     * @param p is pressure
+     * @param volume is volume in liters
+     * @param moles is moles
+     * @param t is temperature
+     * @param unit1 units of original pressure
+     * @param unit2 units of original temperature
+     * @param want which unit is desired
+     * @return
+     */
+    public static double PVnRT(double p, double volume, double moles, double t, String unit1, String unit2, char want) {
+        double pressure = pressureToKpa(p, unit1);
+        double temperature = tempConvert(t, unit2, 'K');
+        //convert to switch statement at one point.
+        if(want == 'P') {
+            return (moles * Chemistry.R * temperature) / (volume);
+        } else if(want == 'V') {
+            return (moles * Chemistry.R * temperature) / (pressure);
+        } else if(want == 'n') {
+            return (pressure * volume) / (Chemistry.R * temperature);
+        } else if(want == 'T') {
+            return (pressure * volume) / (Chemistry.R * moles);
+        } else {
+            return -1;
+        }
+        
+    }
+    public static double DPmRT(double density, double p, String substance, double t, String unit1, String unit2, char want) {
+        double pressure = pressureToKpa(p, unit1);
+        double temperature = tempConvert(t, unit2, 'K');
+        NodeProcessing.search(mainNode, substance);
+        double molarMass = NodeProcessing.lastSearch.getMolarMass();
+        
+        if(want == 'D') {
+            return (pressure * molarMass) / (Chemistry.R * temperature);
+        } else if (want == 'P') {
+            return (Chemistry.R * temperature * pressure) / (molarMass);
+        } else if (want == 'T') {
+            return (pressure * molarMass) / (Chemistry.R * density);
+        } else {
+            return -1;
+        }
+    }
+    
+    
+    //Conversions
+    public static double pressureToKpa(double p, String unit) {
+        switch (unit) {
+            case "torr":
+                double atm = p / 760;
+                return atm * 101.32; //now in Kpa
+                
+            case "Kpa":
+                return p;
+            case "Pa":
+                return p / 1000;
+                
+            case "Latm":
+                return p * 101.32; //now in Kpa
+                
+            case "cal":
+                return p * 4.182;
+            default:
+                return -1;
+        //conversaions to Kpa determined from 
+        //http://www.science.uwaterloo.ca/~cchieh/cact/c120/idealgas.html
+        }
+    }
+    public static double tempConvert(double t, String unit, char want) {
+        if(want == 'K')
+            switch (unit) {
+                case "K":
+                    return t;
+                case "C":
+                    return t + 273.15;
+                case "F":
+                    double c = (t - 32) * (5.0/9);
+                    return c + 273.15;
+                default:
+                    return -1;
+        } else if(want == 'C') {
+            switch (unit) {
+                case "K":
+                    return t - 273.15; 
+                case "C":
+                    return t;
+                case "F":
+                    return (t - 32) * (5.0/9);
+                default:
+                    return -1;
+            }
+        } else if(want == 'F') {
+            switch (unit) {
+                case "K":
+                    double c = t - 273.15;
+                    return (c *(9.0/5)) + 32; 
+                case "C":
+                    return (t *(9.0/5)) + 32;
+                case "F":
+                    return t;
+                default:
+                    return -1;
+            }
+        } else {
+            return -1;
+        }
     }
 }

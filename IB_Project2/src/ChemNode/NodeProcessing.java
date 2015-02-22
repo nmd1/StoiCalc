@@ -112,6 +112,13 @@ public class NodeProcessing {
         }
     }
     
+    /**
+     * Searches for a substance in the main node
+     * and places the resulting Substance object into lastSearch
+     * @param p
+     * @param name
+     * @return node
+     */
     public static Node search(Node p, String name) {
         
         

@@ -9,8 +9,8 @@ public class GUI {
     public JLabel debugLabel, debugLabel2,Answer;
     SpringLayout layout = new SpringLayout();
     Container pane = new Container(), sPane;
-    TextField equationField,InputNumb,InputC;
-    JComboBox chemicalDrop, chemicalDrop2;
+    static TextField equationField,InputNumb,InputC;
+    static JComboBox chemicalDrop, chemicalDrop2, units;
     int xc, yc;
     boolean debug = true;
     
@@ -116,12 +116,11 @@ public class GUI {
         InputC.setColumns(3);
         InputC.setVisible(false);
         
-        final JComboBox units = new JComboBox();
+        units = new JComboBox();
         units.addItem("moles");
-        units.addItem("grams");
-        units.addItem("liters");
-        units.addItem("milliliters");
-        units.addItem("atoms");
+        units.addItem("grams");//solid
+        units.addItem("liters");//liquid or gas (or even solid, with density)
+        units.addItem("milliliters");//liquid or gas again
         units.addItem("molecules");
         units.setSelectedItem(null);
         
@@ -224,16 +223,18 @@ public class GUI {
             }//end of key release  
         });
         InputNumb.addKeyListener(new KeyListener() {
-
+            
             @Override
             public void keyTyped(KeyEvent ke) {
-               char z = ke.getKeyChar();
-               //Burn?
-               boolean burn = !Character.isDigit(z) && !(z == 8) 
-                       && !(z == 46) && !(z < 32) && !(z == 127);//burn if its not a diget and its not a backspace
-               if(burn) {
-                   ke.consume();
-               }
+                char z = ke.getKeyChar();
+                //Burn?
+                boolean burn = !Character.isDigit(z) && !(z == 8) 
+                        && !(z == 46) && !(z < 32)
+                        && (6 < InputNumb.getText().length());//burn if its not a diget and its not a backspace and if there are more than 6 characters
+                if(burn) {
+                    System.out.println(z);
+                    if(!(z == 127)) ke.consume();
+                }
             }
 
             @Override
@@ -246,24 +247,10 @@ public class GUI {
 
             @Override
             public void keyReleased(KeyEvent ke) {
-                double input = Double.parseDouble(InputNumb.getText());
-                double ans = 0;
-                if(units.getSelectedIndex() == 0) {
-                    ans = Processing.molesToMoles(input, (String)chemicalDrop.getSelectedItem(), (String)chemicalDrop2.getSelectedItem()); 
-                }
-                if(units.getSelectedIndex() == 1) {
-                    ans = Processing.gramsTograms(input, (String)chemicalDrop.getSelectedItem(), (String)chemicalDrop2.getSelectedItem()); 
-                }
-                if(units.getSelectedIndex() == 2) {
-                    ans = Processing.litersToLiters(input, Double.parseDouble(InputC.getText()), Double.parseDouble(InputC.getText()));
-                }
-                if(units.getSelectedIndex() == 3) {
-                    ans = Processing.litersToLiters((input / 1000), Double.parseDouble(InputC.getText()), Double.parseDouble(InputC.getText()));
-                }
-                if(units.getSelectedIndex() == 4) {
-                    ans = Processing.atomsToMoles(input, (String)chemicalDrop.getSelectedItem());
-                }
-                Answer.setText(ans + "");
+                System.out.println(units);
+                double ans = Processing.calculate();
+                if(ans == -1) Answer.setText("Error");
+                else Answer.setText(ans + "");
             }
         });
         InputC.addKeyListener(new KeyListener() {
@@ -286,7 +273,9 @@ public class GUI {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                
+                double ans = Processing.calculate();
+                if(ans == -1) Answer.setText("Error");
+                else Answer.setText(ans + "");
             }
         });
         form.addActionListener(new ActionListener () {
