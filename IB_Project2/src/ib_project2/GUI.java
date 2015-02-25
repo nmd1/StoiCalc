@@ -5,10 +5,10 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 public class GUI {
-    public JFrame main, stoic;
+    public JFrame main, stoic, info;
     public JLabel debugLabel, debugLabel2,Answer;
     SpringLayout layout = new SpringLayout();
-    Container pane = new Container(), sPane;
+    Container pane = new Container(), sPane, iPane;
     static TextField equationField,InputNumb,InputC;
     static JComboBox chemicalDrop, chemicalDrop2, units;
     int xc, yc;
@@ -38,7 +38,7 @@ public class GUI {
         Layout(titleLabel, 88, 25);
         titleLabel.setVisible(true);
         
-        //SOLVE MANY BUTTONS PROBLEM
+        //SOLVE MANY BUTTONS PROBLEM//SOLVED. Long ago too.
         
         JButton conv = new JButton();
         conv.setText("stoic");
@@ -137,6 +137,8 @@ public class GUI {
         form.addItem("liquid");
         form.addItem("solid");
         form.setSelectedItem(null);
+        
+        
         
         //(Left/right, up/down)
         Layout(equationField, 100, 170);
@@ -290,6 +292,9 @@ public class GUI {
                }
             }
         });
+        chemicalDrop.addActionListener(form);
+        
+        //SmallWindow
         stoic.add(equationField);
         stoic.add(InputNumb);
         stoic.add(chemicalDrop);
@@ -304,7 +309,57 @@ public class GUI {
         stoic.add(stoicTitleScreen);
         stoic.add(InputC);
     }
+    
+    public void PvtWindow() {
+        iPane = new Container();
+        info = new JFrame();
+        newPanel(info);
+        info.setName("Input Data");
+        info.setSize(main.getSize());//VERY IMPORTANT
+        main.setVisible(false);
+        stoic.setVisible(false);
+        info.setVisible(true);
+        
+        //setting up the window
+    }
     //==============================ACTION LISTENERS====================================//
+    
+    //KEEP CODE? MAYBE???????? 
+    public class AL extends Frame implements WindowListener,ActionListener {
+        TextField text = new TextField(20);
+        Button b;
+        private int numClicks = 0;
+
+        public AL(String title) {
+
+                super(title);
+                setLayout(new FlowLayout());
+                addWindowListener(this);
+                b = new Button("Click me");
+                add(b);
+                add(text);
+                b.addActionListener(this);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+                numClicks++;
+                text.setText("Button Clicked " + numClicks + " times");
+        }
+
+        public void windowClosing(WindowEvent e) {
+                dispose();
+                System.exit(0);
+        }
+
+        public void windowOpened(WindowEvent e) {}
+        public void windowActivated(WindowEvent e) {}
+        public void windowIconified(WindowEvent e) {}
+        public void windowDeiconified(WindowEvent e) {}
+        public void windowDeactivated(WindowEvent e) {}
+        public void windowClosed(WindowEvent e) {}
+
+}
+    //END OF KEEP CODE MAYBE???????
     
     
     //===============================HELPER METHODS=====================================//
