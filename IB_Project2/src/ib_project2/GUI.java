@@ -91,8 +91,9 @@ public class GUI {
 
         final JLabel output = new JLabel();
         output.setText("Enter an equation");
-        output.setSize(10, 50);
-
+        output.setSize(10, 20);
+        output.setFont(new Font("Comic Sans", Font.PLAIN, 30));
+        
         final JLabel Ihave = new JLabel();
         Ihave.setText("I have                                                 of");
         Ihave.setSize(10, 10);
@@ -173,9 +174,12 @@ public class GUI {
         Layout(InputC, 430, 50);
         Layout(winBut, 430, 100);
         Layout(line, 200, 100);
-
+      
         equationField.addKeyListener(new KeyListener() {
-
+            final int widthLimit = 320;
+            final int miniFont = 12;
+            final int maxiFont = 30;
+            
             @Override
             public void keyTyped(KeyEvent e) {
                 char z = e.getKeyChar();
@@ -198,21 +202,30 @@ public class GUI {
                // if(e.getKeyChar())
                 //43 (+) 45 (-) 46 (.)
                 //81, 113, 74, 106 bad numbers
+                if(equationField.getText().isEmpty()){
+                    output.setText("");
+                    output.setFont(new Font("Comic Sans", Font.PLAIN, 30));
+                }
+                //minimum font size, 12
+                if(output.getFont().getSize() <= miniFont && (e.getKeyChar() != 8)) {
+                        e.consume();
+                }
+                
+ 
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
+                    //limit of 320 (in length) and limit of size 30 font
+                   if(output.getWidth() < widthLimit && output.getFont().getSize() < maxiFont) {
+                       output.setFont(new Font("Comic Sans", Font.PLAIN, output.getFont().getSize() + 1));
 
+               }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                //Here is where we parse the string.
-                //its time to make an algorithm.
-                //-MgCl --> Mg22+ + Cl-
-
-                //output.setText(equation.getText());
-                //SPLITTING ALGORTHYTHM!
+                
                 if (!equationField.getText().isEmpty()) {
                     ArrayList<String> chemicals = Processing.CEPS(equationField.getText());
 
@@ -234,11 +247,27 @@ public class GUI {
                         chemicalDrop.removeAllItems();
                         chemicalDrop2.removeAllItems();
                     }
-
-                    Font fs = new Font("Comic Sans", Font.PLAIN, 30);
-                    output.setFont(fs);
-                    output.setText(outputText);
+                    
+                    //limit in length of 320 and minimum font size is 12
+                    if(output.getWidth() > widthLimit && output.getFont().getSize() > miniFont) {
+                        output.setFont(new Font("Comic Sans", Font.PLAIN, output.getFont().getSize() - 1));
+                    }
+                    
+                    
+                      
+                    /*} else {
+                        output.setFont(new Font("Comic Sans", Font.PLAIN, 20));  
+                    }*/
+                    
+                    output.setText(outputText);  Answer.setText(output.getWidth() + "");
                 }
+                //Here is where we parse the string.
+                //its time to make an algorithm.
+                //-MgCl --> Mg22+ + Cl-
+
+                //output.setText(equation.getText());
+                //SPLITTING ALGORTHYTHM!
+                
 
             }//end of key release  
         });
@@ -420,7 +449,7 @@ public class GUI {
     private void pack(JFrame J) {
         //J.pack();
         //J.revalidate();
-        main.setSize(565, 402);
+       
     }
 
     private void Layout(Component c, int x, int y) {
@@ -508,7 +537,7 @@ public class GUI {
         Layout(debugLabel, 30, 335);
         main.add(debugLabel2);
         main.add(debugLabel);
-        pack(main);
+        main.setSize(565, 402);//used to be main.Pack();
 
     }
 }
