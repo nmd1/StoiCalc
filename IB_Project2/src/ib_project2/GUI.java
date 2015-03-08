@@ -15,9 +15,9 @@ public class GUI {
     public JLabel debugLabel, debugLabel2, Answer;
     SpringLayout layout = new SpringLayout();
     Container pane = new Container(), sPane, iPane;
-    static TextField equationField, InputNumb, InputC;
-    static JComboBox chemicalDrop, chemicalDrop2, units;
-    static JButton winBut = new JButton();
+    static TextField equationField, InputNumb;
+    static JComboBox chemicalDrop, chemicalDrop2, units, units2;
+    static JButton winBut = new JButton(), infoBut = new JButton();
     int xc, yc;
     boolean debug = true;
 
@@ -33,7 +33,7 @@ public class GUI {
         if (debug == true) {
             main.addMouseListener(new PanelListener());
         }
-
+        
         mainWindow();
         main.setVisible(true);
     }
@@ -81,6 +81,8 @@ public class GUI {
         pane.setSize(main.getSize());//VERY IMPORTANT
         main.setVisible(false);
         stoic.setVisible(true);
+        if (debug == true) stoic.addMouseListener(new PanelListener());
+
         //setting up the window
 
         final JLabel stoicTitleScreen = new JLabel();
@@ -90,21 +92,14 @@ public class GUI {
         stoicTitleScreen.setFont(fs);
 
         final JLabel output = new JLabel();
-        output.setText("Enter an equation");
+        output.setText("     Enter an equation");
         output.setSize(10, 20);
         output.setFont(new Font("Comic Sans", Font.PLAIN, 30));
         
-        final JLabel Ihave = new JLabel();
-        Ihave.setText("I have                                                 of");
-        Ihave.setSize(10, 10);
-
-        final JLabel HowMuch = new JLabel();
-        HowMuch.setText("How Much");
-        HowMuch.setSize(10, 10);
-
-        final JLabel WillINeed = new JLabel();
-        WillINeed.setText("Will I Have?");
-        WillINeed.setSize(10, 10);
+        final JLabel arrow = new JLabel();
+        arrow.setText("→");
+        arrow.setSize(10, 10);
+        arrow.setFont(new Font("Comic Sans", Font.PLAIN, 50));
 
         Answer = new JLabel();
         Answer.setText("");
@@ -115,10 +110,7 @@ public class GUI {
 
         InputNumb = new TextField();
         InputNumb.setColumns(5);
-
-        InputC = new TextField();
-        InputC.setColumns(3);
-        InputC.setVisible(false);
+       
 
         units = new JComboBox();
         units.addItem("moles");
@@ -127,6 +119,16 @@ public class GUI {
         units.addItem("milliliters");//liquid or gas again
         units.addItem("molecules");
         units.setSelectedItem(null);
+        
+        units2 = new JComboBox();
+        units2.addItem("moles");
+        units2.addItem("grams");//solid
+        units2.addItem("liters");//liquid or gas (or even solid, with density)
+        units2.addItem("milliliters");//liquid or gas again
+        units2.addItem("molecules");
+        units2.addItem("atoms");
+        units2.addItem("gas...");
+        units2.setSelectedItem(null);
 
         chemicalDrop = new JComboBox();
         chemicalDrop.setMaximumRowCount(5);
@@ -136,16 +138,22 @@ public class GUI {
         chemicalDrop2.setMaximumRowCount(5);
         chemicalDrop2.setPreferredSize(new Dimension(65, 20));
 
-        final JComboBox form = new JComboBox();
-        form.addItem("gas");
-        form.addItem("liquid");
-        form.addItem("solid");
-        form.setSelectedItem(null);
+        final JComboBox phase = new JComboBox();
+        phase.addItem("gas");
+        phase.addItem("liquid");
+        phase.addItem("solid");
+        phase.setSelectedItem(null);
+        
+        final JComboBox phase2 = new JComboBox();
+        phase2.addItem("gas");
+        phase2.addItem("liquid");
+        phase2.addItem("solid");
+        phase2.setSelectedItem(null);
         
         //Buttons
         winBut = new JButton();
         winBut.setText("P");
-        Dimension a = new Dimension(55, 30);
+        Dimension a = new Dimension(75, 30);
         winBut.setPreferredSize(a);
         winBut.addActionListener(new ActionListener() {
             @Override
@@ -154,27 +162,38 @@ public class GUI {
             }
         });
         winBut.setVisible(false);
+        infoBut = new JButton();
+        infoBut.setText("P");
+        infoBut.setPreferredSize(a);
+        infoBut.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PvtWindow();
+            }
+        });
+        infoBut.setVisible(false);
         
         JSeparator line = new JSeparator(SwingConstants.VERTICAL);
         line.setSize(60,60);
         
+        
         //(Left/right, up/down)
-        Layout(equationField, 100, 170);
-        Layout(InputNumb, 140, 50);
-        Layout(chemicalDrop, 295, 50);
-        Layout(chemicalDrop2, 155, 90);
-        Layout(units, 200, 50);
-        Layout(form, 375, 50);
-        Layout(output, 100, 120);
-        Layout(Ihave, 100, 53);
-        Layout(HowMuch, 100, 93);
-        Layout(WillINeed, 225, 93);
-        Layout(Answer, 300, 93);
+        Layout(equationField, 100, 220);
+        Layout(InputNumb, 70, 60);
+        Layout(chemicalDrop, 70, 90);
+        Layout(chemicalDrop2, 380, 60);
+        Layout(units, 135, 60);
+        Layout(units2, 300, 60);
+        Layout(phase, 150, 90);
+        Layout(phase2, 350, 85);
+        Layout(output, 100, 170);
+        Layout(arrow, 225, 85);
+        Layout(Answer, 110, 250);
         Layout(stoicTitleScreen, 170, 7);
-        Layout(InputC, 430, 50);
-        Layout(winBut, 430, 100);
+        Layout(winBut, 100, 130);
+        Layout(infoBut, 340, 130);
         Layout(line, 200, 100);
-      
+        
         equationField.addKeyListener(new KeyListener() {
             final int widthLimit = 320;
             final int miniFont = 12;
@@ -259,7 +278,7 @@ public class GUI {
                         output.setFont(new Font("Comic Sans", Font.PLAIN, 20));  
                     }*/
                     
-                    output.setText(outputText);  Answer.setText(output.getWidth() + "");
+                    output.setText(outputText);  //Answer.setText(output.getWidth() + "");
                 }
                 //Here is where we parse the string.
                 //its time to make an algorithm.
@@ -307,10 +326,7 @@ public class GUI {
                 }
             }
         });
-        InputC.addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyTyped(KeyEvent ge) {
+                /*
                 char z = ge.getKeyChar();
                 //Burn?
                 boolean burn = !Character.isDigit(z) && !(z == 8)
@@ -318,41 +334,103 @@ public class GUI {
                 if (burn) {
                     ge.consume();
                 }
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                double ans = Processing.calculate();
-                if (ans == -1) {
-                    Answer.setText("Error");
-                } else {
-                    Answer.setText(ans + "");
-                }
-            }
-        });
-        form.addActionListener(new ActionListener() {
+                        */
+        phase.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //if Liquid is selected, show the Concentrations box
-                if (form.getSelectedIndex() == 0) { //GAS
+                if (phase.getSelectedIndex() == 0) { //GAS
+                    InputNumb.setEnabled(false);
+                    units.setEnabled(false);  
                     winBut.setVisible(true);
-                    winBut.setText("Prop");
-                    InputC.setVisible(false);
-                } else if(form.getSelectedIndex() == 1){ //LIQUID
-                    InputC.setVisible(false);
-                    winBut.setVisible(false);
-                } else if(form.getSelectedIndex() == 2) { //SOLID
-                    InputC.setVisible(false);
-                    winBut.setVisible(false);
+                    winBut.setText("PV=nRT");//or D instead of V
+                } else if(phase.getSelectedIndex() == 1){ //LIQUID
+                    InputNumb.setEnabled(true);
+                    units.setEnabled(true);  
+                    winBut.setVisible(true);
+                    winBut.setText("[CONC]");
+                } else if(phase.getSelectedIndex() == 2) { //SOLID
+                    InputNumb.setEnabled(true);
+                    units.setEnabled(true);  
+                    winBut.setVisible(true);
+                    winBut.setText("Density");
                 }
             }
         });
-        chemicalDrop.addActionListener(form);
+        phase2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //if Liquid is selected, show the Concentrations box
+                if (phase2.getSelectedIndex() == 0) { //GAS
+                    units2.setEnabled(true);  
+                    infoBut.setVisible(true);
+                    infoBut.setEnabled(true);
+                    infoBut.setText("STP");
+                } else if(phase2.getSelectedIndex() == 1){ //LIQUID
+                    units2.setEnabled(true);  
+                    infoBut.setVisible(true);
+                    infoBut.setEnabled(true);
+                    infoBut.setText("[CONC]");
+                } else if(phase2.getSelectedIndex() == 2) { //SOLID
+                    units2.setEnabled(true);  
+                    infoBut.setVisible(true);
+                    infoBut.setEnabled(true);
+                    infoBut.setText("Density");
+                }
+            }
+        });
+        units.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (units.getSelectedIndex() == 0) { //moles
+                    phase.setEnabled(false);
+                    winBut.setVisible(false);
+                } else if(units.getSelectedIndex() == 1){ //grams
+                    phase.setEnabled(false);
+                    winBut.setVisible(false);
+                } else if(units.getSelectedIndex() == 2) { //liters
+                    phase.setEnabled(true);
+                } else if(units.getSelectedIndex() == 3) { //MLiters
+                    phase.setEnabled(true);
+                } else if(units.getSelectedIndex() == 4) { //Molecules
+                    phase.setEnabled(false);
+                    winBut.setVisible(false);
+                }
+            }
+            
+        });
+        units2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (units2.getSelectedIndex() == 0) { //moles
+                    phase2.setEnabled(false);
+                    infoBut.setVisible(false);
+                } else if(units2.getSelectedIndex() == 1){ //grams
+                    phase2.setEnabled(false);
+                    infoBut.setVisible(false);
+                } else if(units2.getSelectedIndex() == 2) { //liters
+                    phase2.setEnabled(true);
+                } else if(units2.getSelectedIndex() == 3) { //MLiters
+                    phase2.setEnabled(true);
+                } else if(units2.getSelectedIndex() == 4) { //Molecules
+                    phase2.setEnabled(false);
+                    infoBut.setVisible(false);
+                } else if(units2.getSelectedIndex() == 5) { //atoms
+                    phase2.setEnabled(false);
+                    infoBut.setVisible(false);
+                } else if(units2.getSelectedIndex() == 6) { //gas
+                    phase2.setEnabled(false);
+                    phase2.setSelectedIndex(0);
+                    infoBut.setVisible(true);
+                    infoBut.setEnabled(true);
+                    infoBut.setText("Select Type");
+                }
+                
+            }
+            
+        });
+        chemicalDrop.addActionListener(phase);
+        
 
         //SmallWindow
         stoic.add(equationField);
@@ -361,15 +439,16 @@ public class GUI {
         stoic.add(chemicalDrop);
         stoic.add(chemicalDrop2);
         stoic.add(units);
-        stoic.add(form);
+        stoic.add(units2);
+        stoic.add(phase);
+        stoic.add(phase2);
         stoic.add(output);
-        stoic.add(Ihave);
-        stoic.add(HowMuch);
-        stoic.add(WillINeed);
+        stoic.add(arrow);
         stoic.add(Answer);
         stoic.add(stoicTitleScreen);
-        stoic.add(InputC);
         stoic.add(winBut);
+        stoic.add(infoBut);
+        stoic.add(line);
     }
 
     public void PvtWindow() {
@@ -381,8 +460,9 @@ public class GUI {
         main.setVisible(false);
         //stoic.setVisible(true);
         info.setVisible(true);
-        info.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        info.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         info.setName("Congress");
+        stoic.setEnabled(false);//important to make the window enabled after you're done.
         
         
         //setting up the window
