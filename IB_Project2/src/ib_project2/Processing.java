@@ -416,11 +416,13 @@ public class Processing {
     
     
     public static double calculate() {
-
         double ans = -1;
         if(GUI.InputNumb.getText().isEmpty()) return -1;
         double input = Double.parseDouble(GUI.InputNumb.getText());
         System.out.println(GUI.units);
+        int startUnit = GUI.units.getSelectedIndex();
+        int endUnit = GUI.units2.getSelectedIndex();
+        
         if(GUI.units.getSelectedIndex() == 0) {
                 //moles, starting substance, ending substance
                 ans = Processing.molesToMoles(input, (String)GUI.chemicalDrop.getSelectedItem(), (String)GUI.chemicalDrop2.getSelectedItem()); 
@@ -578,8 +580,11 @@ public class Processing {
             case "Latm":
                 return p * 101.32; //now in Kpa
                 
-            case "cal":
-                return p * 4.182;
+            case "bar":
+                return p * 100;
+                
+            case "psi":
+                return p * 6.89475729;
             default:
                 return -1;
         //conversaions to Kpa determined from 

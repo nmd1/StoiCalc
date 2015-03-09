@@ -12,13 +12,14 @@ import javax.swing.*;
 public class GUI {
 
     public JFrame main, stoic, info;
-    public JLabel debugLabel, debugLabel2, Answer;
+    public JLabel debugLabel, debugLabel2, Answer, winLabel, infoLabel;
     SpringLayout layout = new SpringLayout();
     Container pane = new Container(), sPane, iPane;
-    static TextField equationField, InputNumb;
+    static TextField equationField, InputNumb, InputC;
     static JComboBox chemicalDrop, chemicalDrop2, units, units2;
     static JButton winBut = new JButton(), infoBut = new JButton();
     int xc, yc;
+    double theNumber, moles, theNumber2;
     boolean debug = true;
 
     public Label titleLabel = new Label();
@@ -60,11 +61,23 @@ public class GUI {
                 stoicWindow();
             }
         });
+        
+        JButton exit = new JButton();
+        exit.setText("Exit");
+        exit.setPreferredSize(a);
+        Layout(exit, 210, 250);
+        exit.setVisible(true);
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
 
         //ADDING COMPONENTS
         main.add(titleLabel);
         main.add(conv);
-
+        main.add(exit);
         if (debug) {
             DebugSize(main);
         }
@@ -100,7 +113,15 @@ public class GUI {
         arrow.setText("→");
         arrow.setSize(10, 10);
         arrow.setFont(new Font("Comic Sans", Font.PLAIN, 50));
-
+        
+        winLabel = new JLabel("Null");
+       // winLabel.setText("");
+        winLabel.setSize(10, 10);
+        
+        infoLabel = new JLabel("Null");
+        //infoLabel.setText("");
+        infoLabel.setSize(10, 10);
+        
         Answer = new JLabel();
         Answer.setText("");
         Answer.setSize(10, 10);
@@ -151,6 +172,18 @@ public class GUI {
         phase2.setSelectedItem(null);
         
         //Buttons
+        JButton end = new JButton();
+        end.setText("Main Menu");
+        end.setPreferredSize(new Dimension (75, 30));
+        end.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                main.setVisible(true);
+                stoic.dispose();
+            }
+        });
+        
         winBut = new JButton();
         winBut.setText("P");
         Dimension a = new Dimension(75, 30);
@@ -158,7 +191,7 @@ public class GUI {
         winBut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PvtWindow();
+                PvtWindow(true);
             }
         });
         winBut.setVisible(false);
@@ -168,7 +201,7 @@ public class GUI {
         infoBut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PvtWindow();
+                PvtWindow(false);
             }
         });
         infoBut.setVisible(false);
@@ -190,8 +223,11 @@ public class GUI {
         Layout(arrow, 225, 85);
         Layout(Answer, 110, 250);
         Layout(stoicTitleScreen, 170, 7);
-        Layout(winBut, 100, 130);
-        Layout(infoBut, 340, 130);
+        Layout(winBut, 70, 130);
+        Layout(infoBut, 300, 130);
+        Layout(winLabel, 150, 140);
+        Layout(infoLabel, 390, 140);
+        Layout(end,220,330);
         Layout(line, 200, 100);
         
         equationField.addKeyListener(new KeyListener() {
@@ -326,15 +362,6 @@ public class GUI {
                 }
             }
         });
-                /*
-                char z = ge.getKeyChar();
-                //Burn?
-                boolean burn = !Character.isDigit(z) && !(z == 8)
-                        && !(z == 46) && !(z < 32) && !(z == 127);//burn if its not a diget and its not a backspace
-                if (burn) {
-                    ge.consume();
-                }
-                        */
         phase.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -364,7 +391,7 @@ public class GUI {
                 if (phase2.getSelectedIndex() == 0) { //GAS
                     units2.setEnabled(true);  
                     infoBut.setVisible(true);
-                    infoBut.setEnabled(true);
+                    infoBut.setEnabled(false);
                     infoBut.setText("STP");
                 } else if(phase2.getSelectedIndex() == 1){ //LIQUID
                     units2.setEnabled(true);  
@@ -430,8 +457,7 @@ public class GUI {
             
         });
         chemicalDrop.addActionListener(phase);
-        
-
+                     
         //SmallWindow
         stoic.add(equationField);
         stoic.add(line);
@@ -448,23 +474,432 @@ public class GUI {
         stoic.add(stoicTitleScreen);
         stoic.add(winBut);
         stoic.add(infoBut);
+        stoic.add(winLabel);
+        stoic.add(infoLabel);
+        stoic.add(end);
         stoic.add(line);
     }
 
-    public void PvtWindow() {
+    public void PvtWindow(boolean start) {
+        String display = "";
         iPane = new Container();
         info = new JFrame();
         newPanel(info);
         info.setName("Input Data");
-        info.setSize(300,200);//VERY IMPORTANT
+        info.setTitle("Input Data");
+        info.setSize(300,300);
         main.setVisible(false);
         //stoic.setVisible(true);
+        if (debug == true) info.addMouseListener(new PanelListener());
         info.setVisible(true);
         info.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         info.setName("Congress");
         stoic.setEnabled(false);//important to make the window enabled after you're done.
         
         
+        JButton end = new JButton();
+        end.setText("Done");
+        Dimension a = new Dimension(65, 30);
+        end.setPreferredSize(a);
+        
+        end.setVisible(true);
+        final JTextField one = new JTextField();
+        final JTextField two = new JTextField();
+        final JTextField three = new JTextField();
+        final JTextField four = new JTextField();
+        one.setColumns(10);two.setColumns(10);
+        three.setColumns(10);four.setColumns(10);
+        final JLabel title = new JLabel("Null");
+        title.setFont(new Font("Comic Sans", Font.BOLD, 15));
+        JLabel first = new JLabel("Null");
+        JLabel second = new JLabel("Null");
+        JLabel third = new JLabel("Null");
+        JLabel fourth = new JLabel("Null");
+        JComboBox STP = new JComboBox();
+        final JRadioButton f = new JRadioButton("");f.setVisible(false);
+        final JRadioButton s = new JRadioButton("");s.setVisible(false);
+        final JRadioButton t = new JRadioButton("");t.setVisible(false);
+        final JRadioButton r = new JRadioButton("");r.setVisible(false);
+        ButtonGroup group = new ButtonGroup();
+        group.add(f);
+        group.add(s);
+        group.add(t);
+        group.add(r);
+        two.setVisible(false);
+        three.setVisible(false);
+        four.setVisible(false);
+        second.setVisible(false);
+        third.setVisible(false);
+        fourth.setVisible(false);
+        one.setName(one.getText());
+        two.setName(two.getText());
+        three.setName(three.getText());
+        four.setName(four.getText());
+        final JComboBox press = new JComboBox();
+        press.addItem("Kpa");
+        press.addItem("torr");//solid
+        press.addItem("Pa");//liquid or gas (or even solid, with density)
+        press.addItem("Latm");//liquid or gas again
+        press.addItem("bar");
+        press.addItem("psi");
+        press.setSelectedItem("Kpa");
+        final JComboBox temp = new JComboBox();
+        temp.addItem("K");
+        temp.addItem("C");//solid
+        temp.addItem("F");//liquid or gas (or even solid, with density)
+        temp.setSelectedItem("K");
+        final JComboBox vol = new JComboBox();
+        vol.addItem("L");
+        vol.addItem("mL");//solid
+        vol.setSelectedItem("L");
+        press.setVisible(false);
+        temp.setVisible(false);
+        vol.setVisible(false);
+        
+        
+        one.addKeyListener(new KeyListener() {
+            
+            @Override
+            public void keyTyped(KeyEvent ke) {
+                char z = ke.getKeyChar();
+                boolean burn = !Character.isDigit(z) && !(z == 8)
+                    && !(z == 46) && !(z < 32) && !(z == 127);//burn if its not a diget and its not a backspace
+                if(ke.getComponent().getName().contains(".") && z == 46)burn = true;
+                if(burn) ke.consume();
+            }
+            @Override
+            public void keyPressed(KeyEvent ke) {
+
+            }
+            @Override
+            public void keyReleased(KeyEvent ke) {
+            }
+            
+        });
+        two.addKeyListener(one.getKeyListeners()[0]);
+        three.addKeyListener(one.getKeyListeners()[0]);
+        four.addKeyListener(one.getKeyListeners()[0]);
+        /*
+        DebugSize(info);
+        Layout(debugLabel, 0, 110);
+        Layout(debugLabel2, 0, 165);
+        */
+        int n = 35;
+        Layout(end, 110, 200);
+        Layout(one, 130, n);
+        Layout(two, 130, n + 25);
+        Layout(three, 130, n + 50);
+        Layout(four, 130, n + 75);
+        Layout(first, 10, n + 5);
+        Layout(second, 10, n + 30);
+        Layout(third, 10, n + 55);
+        Layout(fourth, 10, n + 80);
+        Layout(f, 10, n + 5);
+        Layout(s, 10, n + 30);
+        Layout(t, 10, n + 55);
+        Layout(r, 10, n + 80);
+        Layout(title, 60, 6);
+        Layout(press, 220,35);
+        Layout(temp, 220, 85);
+        Layout(vol, 220, 60);
+        info.add(end);
+        info.add(one);
+        info.add(two);
+        info.add(three);
+        info.add(four);
+        info.add(first);
+        info.add(second);
+        info.add(third);
+        info.add(fourth);
+        info.add(f);
+        info.add(s);
+        info.add(t);
+        info.add(r);
+        info.add(press);
+        info.add(temp);
+        info.add(title);
+        info.add(vol);
+        
+        String name = "";
+        int indicator = 0;
+        if(start) {
+            name = winBut.getText();
+            
+            
+            switch (name) {
+                case "Density":
+                    title.setText("Set Density");
+                    first.setText("Input Density in g/L");
+                    indicator = 1;
+                    Layout(title, 70, 6);
+                    Layout(end, 70,70);
+                    info.setSize(260,150);
+                    break;
+                case "[CONC]":
+                    three.setEnabled(false);
+                    four.setEnabled(false);
+                    title.setText("Set Concentration");
+                    first.setVisible(false);
+                    f.setVisible(true);
+                    t.setVisible(true);
+                    f.setText("Concentration in M");
+                    three.setVisible(true);
+                    four.setVisible(true);
+                    t.setText("% by mass");
+                    fourth.setVisible(true);
+                    fourth.setText("& density");
+                    
+                    Layout(f, 3, 33);
+                    Layout(t, 40, 85);
+                    Layout(fourth, 75, 115);
+                    
+                    f.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            if(f.isSelected()) {
+                                three.setEnabled(false);
+                                four.setEnabled(false);
+                            one.setEnabled(true);
+                            } else if(t.isSelected()) {
+                                three.setEnabled(true);
+                                four.setEnabled(true);
+                                one.setEnabled(false);
+                            } 
+                        }
+
+                    });
+                    t.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            if(f.isSelected()) {
+                                three.setEnabled(false);
+                                four.setEnabled(false);
+                            one.setEnabled(true);
+                            } else if(t.isSelected()) {
+                                three.setEnabled(true);
+                                four.setEnabled(true);
+                                one.setEnabled(false);
+                            } 
+                        }
+
+                    });
+                    
+                    Layout(title, 45, 6);
+                    Layout(end, 95, 150);
+                    info.setSize(260,240);
+                    indicator = 2;
+                    break;
+                case "PV=nRT":
+                    two.setVisible(true);
+                    three.setVisible(true);
+                    second.setVisible(true);
+                    third.setVisible(true);
+                    first.setText("Pressure");
+                    second.setText("Volume");
+                    third.setText("Temperature");
+                    Layout(first, 70, 35);
+                    Layout(second, 75, n + 30);
+                    Layout(third, 60, n + 55);
+                    Layout(title, 85, 6);
+                    Layout(end, 110, 130);
+                    
+                    title.setText("Gas Information");
+                    temp.setVisible(true);
+                    press.setVisible(true);
+                    vol.setVisible(true);
+                    
+                    info.setSize(343,222);
+                    
+                    
+                    indicator = 3;
+                    break;
+            }
+            
+            
+        } else {
+            name = infoBut.getText();
+            
+            switch (name) {
+                case "Density":
+                    title.setText("Set Density");
+                    first.setText("Input Density in g/L");
+                    Layout(title, 70, 6);
+                    Layout(end, 70,70);
+                    info.setSize(260,150);                 
+                    indicator = 4;
+                    break;
+                case "[CONC]":
+                    title.setText("Resulting Concentration");
+                    first.setText("Concentration in M");
+                    Layout(title, 30, 6);
+                    Layout(end, 80, 60);
+                    info.setSize(260,150);
+                    indicator = 5;
+                    break;
+                case "Select Type":
+                    first.setVisible(false);
+                    two.setVisible(true);
+                    three.setVisible(true);
+                    f.setVisible(true);
+                    s.setVisible(true);
+                    t.setVisible(true);
+                    r.setVisible(true);
+                    title.setText("Select Desired Informaiton");
+                    f.setText("Pressure");
+                    s.setText("Volume");
+                    t.setText("Temperature");
+                    r.setText("Density (in g/L)");
+                    press.setVisible(true);
+                    vol.setVisible(true);
+                    temp.setVisible(true);
+                    
+                    f.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            if(f.isSelected()) {
+                                one.setEnabled(false);
+                                two.setEnabled(true);
+                                three.setEnabled(true);
+                                
+                                press.setEnabled(false);
+                                vol.setEnabled(true);
+                                temp.setEnabled(true);
+                            } else if(s.isSelected()) {
+                                one.setEnabled(true);
+                                two.setEnabled(false);
+                                three.setEnabled(true);
+                                
+                                press.setEnabled(true);
+                                vol.setEnabled(false);
+                                temp.setEnabled(true);
+                            } else if(t.isSelected()) {
+                                one.setEnabled(true);
+                                two.setEnabled(true);
+                                three.setEnabled(false);
+                                        
+                                press.setEnabled(true);
+                                vol.setEnabled(true);
+                                temp.setEnabled(false);
+                            } else if(r.isSelected() ) {
+                                one.setEnabled(true);
+                                two.setEnabled(false);
+                                three.setEnabled(true);
+                                
+                                press.setEnabled(true);
+                                vol.setEnabled(false);
+                                temp.setEnabled(true);
+                            }
+                        }
+
+                    });
+                    s.addActionListener(f.getActionListeners()[0]);
+                    t.addActionListener(f.getActionListeners()[0]);
+                    r.addActionListener(f.getActionListeners()[0]);
+                    
+                    Layout(title, 50, 6);
+                    Layout(f, 60, 35);
+                    Layout(s, 60, 60);
+                    Layout(t, 40, 85);
+                    Layout(r, 90, 115);
+                    Layout(end, 110, 145);
+                    info.setSize(315,220);
+                    indicator = 6;
+                    break;
+            }
+            
+        }
+        final int passthrough = indicator;
+        end.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stoic.setEnabled(true);
+                
+                switch(passthrough) {
+                    case 1:
+                        winLabel.setText("Density:" + one.getText());
+                        theNumber = Double.parseDouble(one.getText());
+                        break;
+                    case 2:
+                        if(f.isSelected()){
+                            winLabel.setText(one.getText() + "M");
+                            theNumber = Double.parseDouble(one.getText());
+                        } else if(t.isSelected()){
+                            double p = Double.parseDouble(three.getText());
+                            double d = Double.parseDouble(four.getText());
+                            double a = Processing.percentToConcentration(p, d, chemicalDrop.getSelectedItem().toString());
+                            winLabel.setText(Math.round(a) + "M");
+                            theNumber = a;
+                        }
+                        break;
+                    case 3:
+                        double p2 = Double.parseDouble(one.getText());
+                        double v2 = Double.parseDouble(two.getText());
+                        if(vol.getSelectedIndex() == 1) v2 = v2 / 1000;
+                        double t2 = Double.parseDouble(three.getText());
+                        double a = Processing.PVnRT(p2, v2, 0, t2, press.getSelectedItem().toString(), temp.getSelectedItem().toString(), 'n');
+                        Layout(winLabel, 150, 125);
+                        //winLabel.setSize(100,100);
+                        winLabel.setText("<html>" +p2 +" "+ press.getSelectedItem().toString()
+                                + "<br>" + v2 +" "+ vol.getSelectedItem().toString() + "<br>"
+                                + t2 +" "+ temp.getSelectedItem().toString() + "</html>");
+                        theNumber = a;
+                        break;
+                    case 4:
+                        infoLabel.setText("at a Desnity of " + one.getText());
+                        theNumber2 = Double.parseDouble(one.getText());
+                        break;
+                    case 5:
+                        infoLabel.setText(one.getText() + "M");
+                        theNumber2 = Double.parseDouble(one.getText());
+                        break;
+                    case 6:
+                        double p = 0;
+                        double v = 0;
+                        double te = 0;
+                        if(f.isSelected()){
+                            //pressure
+                            v = Double.parseDouble(two.getText());
+                            if(vol.getSelectedIndex() == 1) v = v / 1000;
+                            te = Double.parseDouble(three.getText());
+                            double ans = Processing.PVnRT(0, v, moles, te, "Kpa", temp.getSelectedItem().toString(), 'P');
+                            theNumber2 = ans;
+                            infoLabel.setText("<html>Presure (in Kpa) at <br>" + v +" "+ vol.getSelectedItem().toString() + "<br>"
+                                + te +" "+ temp.getSelectedItem().toString() + "</html>");
+                        } else if(s.isSelected()){
+                            //Volume
+                            p = Double.parseDouble(one.getText());
+                            te = Double.parseDouble(three.getText());
+                            double ans = Processing.PVnRT(p, 0, moles, te, press.getSelectedItem().toString(), temp.getSelectedItem().toString(), 'V');
+                            theNumber2 = ans;
+                            infoLabel.setText("<html>Volume (in L) at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
+                                + te +" "+ temp.getSelectedItem().toString() + "</html>");
+                        } else if(t.isSelected()) {
+                            //temperature
+                            p = Double.parseDouble(one.getText());
+                            v = Double.parseDouble(two.getText());
+                            if(vol.getSelectedIndex() == 1) v = v / 1000;
+                            double ans = Processing.PVnRT(p, v, moles, 0, press.getSelectedItem().toString(), "K", 'T');
+                            theNumber2 = ans;
+                            infoLabel.setText("<html>Temperature (in K) at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
+                                + v+" "+ vol.getSelectedItem().toString() + "</html>");
+                        } else if(r.isSelected()) {
+                            //Density
+                            p = Double.parseDouble(one.getText());
+                            te = Double.parseDouble(three.getText());
+                            double ans = Processing.DPmRT(0, p, chemicalDrop2.getSelectedItem().toString(), te, press.getSelectedItem().toString(),
+                                    temp.getSelectedItem().toString(), 'D');
+                            theNumber2 = ans;
+                            infoLabel.setText("<html>Density at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
+                                + te +" "+ temp.getSelectedItem().toString() + "</html>");
+                            
+                        }
+                        
+                        break;                        
+                }
+                System.out.println("The Number: " + theNumber);
+                info.dispose();
+            }
+        });
         //setting up the window
     }
     //==============================ACTION LISTENERS====================================//
@@ -615,9 +1050,9 @@ public class GUI {
         });
 
         Layout(debugLabel, 30, 335);
-        main.add(debugLabel2);
-        main.add(debugLabel);
-        main.setSize(565, 402);//used to be main.Pack();
+        j.add(debugLabel2);
+        j.add(debugLabel);
+        //main.setSize(565, 402);//used to be main.Pack();
 
     }
 }
