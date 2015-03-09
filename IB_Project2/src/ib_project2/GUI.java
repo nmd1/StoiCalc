@@ -174,7 +174,7 @@ public class GUI {
         //Buttons
         JButton end = new JButton();
         end.setText("Main Menu");
-        end.setPreferredSize(new Dimension (75, 30));
+        end.setPreferredSize(new Dimension (95, 50));
         end.addActionListener(new ActionListener() {
 
             @Override
@@ -191,7 +191,8 @@ public class GUI {
         winBut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PvtWindow(true);
+                if(chemicalDrop.getSelectedItem() != null) PvtWindow(true);
+                else JOptionPane.showMessageDialog(stoic, "Select a chemical from the dropdown menu");
             }
         });
         winBut.setVisible(false);
@@ -201,7 +202,8 @@ public class GUI {
         infoBut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PvtWindow(false);
+                if(chemicalDrop2.getSelectedItem() != null) PvtWindow(false);
+                else JOptionPane.showMessageDialog(stoic, "Select a chemical from the dropdown menu");
             }
         });
         infoBut.setVisible(false);
@@ -227,7 +229,7 @@ public class GUI {
         Layout(infoBut, 300, 130);
         Layout(winLabel, 150, 140);
         Layout(infoLabel, 390, 140);
-        Layout(end,220,330);
+        Layout(end,220,300);
         Layout(line, 200, 100);
         
         equationField.addKeyListener(new KeyListener() {
@@ -515,7 +517,9 @@ public class GUI {
         JLabel second = new JLabel("Null");
         JLabel third = new JLabel("Null");
         JLabel fourth = new JLabel("Null");
-        JComboBox STP = new JComboBox();
+        
+        final JCheckBox STP = new JCheckBox();
+        
         final JRadioButton f = new JRadioButton("");f.setVisible(false);
         final JRadioButton s = new JRadioButton("");s.setVisible(false);
         final JRadioButton t = new JRadioButton("");t.setVisible(false);
@@ -602,6 +606,7 @@ public class GUI {
         Layout(press, 220,35);
         Layout(temp, 220, 85);
         Layout(vol, 220, 60);
+        Layout(STP, 120, 110);
         info.add(end);
         info.add(one);
         info.add(two);
@@ -619,6 +624,7 @@ public class GUI {
         info.add(temp);
         info.add(title);
         info.add(vol);
+        info.add(STP);
         
         String name = "";
         int indicator = 0;
@@ -694,6 +700,8 @@ public class GUI {
                     three.setVisible(true);
                     second.setVisible(true);
                     third.setVisible(true);
+                    STP.setVisible(true);
+                    STP.setText("STP");
                     first.setText("Pressure");
                     second.setText("Volume");
                     third.setText("Temperature");
@@ -701,7 +709,32 @@ public class GUI {
                     Layout(second, 75, n + 30);
                     Layout(third, 60, n + 55);
                     Layout(title, 85, 6);
-                    Layout(end, 110, 130);
+                    Layout(end, 110, 140);
+                    
+                    
+                    STP.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if(STP.isSelected()) {
+                                one.setEnabled(false); 
+                                two.setEnabled(false);
+                                three.setEnabled(false);
+                                
+                                press.setEnabled(false);
+                                temp.setEnabled(false);
+                                vol.setEnabled(false);
+                                
+                            } else {
+                                one.setEnabled(true); 
+                                two.setEnabled(true);
+                                three.setEnabled(true);
+                                
+                                press.setEnabled(true);
+                                temp.setEnabled(true);
+                                vol.setEnabled(true);
+                            }
+                        }
+                    });
                     
                     title.setText("Gas Information");
                     temp.setVisible(true);
@@ -812,92 +845,106 @@ public class GUI {
         end.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                stoic.setEnabled(true);
+                boolean go = true;
                 
-                switch(passthrough) {
-                    case 1:
-                        winLabel.setText("Density:" + one.getText());
-                        theNumber = Double.parseDouble(one.getText());
-                        break;
-                    case 2:
-                        if(f.isSelected()){
-                            winLabel.setText(one.getText() + "M");
+                stoic.setEnabled(true);
+                try{
+                    switch(passthrough) {
+                        case 1:
+                            winLabel.setText("Density:" + one.getText());
                             theNumber = Double.parseDouble(one.getText());
-                        } else if(t.isSelected()){
-                            double p = Double.parseDouble(three.getText());
-                            double d = Double.parseDouble(four.getText());
-                            double a = Processing.percentToConcentration(p, d, chemicalDrop.getSelectedItem().toString());
-                            winLabel.setText(Math.round(a) + "M");
-                            theNumber = a;
-                        }
-                        break;
-                    case 3:
-                        double p2 = Double.parseDouble(one.getText());
-                        double v2 = Double.parseDouble(two.getText());
-                        if(vol.getSelectedIndex() == 1) v2 = v2 / 1000;
-                        double t2 = Double.parseDouble(three.getText());
-                        double a = Processing.PVnRT(p2, v2, 0, t2, press.getSelectedItem().toString(), temp.getSelectedItem().toString(), 'n');
-                        Layout(winLabel, 150, 125);
-                        //winLabel.setSize(100,100);
-                        winLabel.setText("<html>" +p2 +" "+ press.getSelectedItem().toString()
-                                + "<br>" + v2 +" "+ vol.getSelectedItem().toString() + "<br>"
-                                + t2 +" "+ temp.getSelectedItem().toString() + "</html>");
-                        theNumber = a;
-                        break;
-                    case 4:
-                        infoLabel.setText("at a Desnity of " + one.getText());
-                        theNumber2 = Double.parseDouble(one.getText());
-                        break;
-                    case 5:
-                        infoLabel.setText(one.getText() + "M");
-                        theNumber2 = Double.parseDouble(one.getText());
-                        break;
-                    case 6:
-                        double p = 0;
-                        double v = 0;
-                        double te = 0;
-                        if(f.isSelected()){
-                            //pressure
-                            v = Double.parseDouble(two.getText());
-                            if(vol.getSelectedIndex() == 1) v = v / 1000;
-                            te = Double.parseDouble(three.getText());
-                            double ans = Processing.PVnRT(0, v, moles, te, "Kpa", temp.getSelectedItem().toString(), 'P');
-                            theNumber2 = ans;
-                            infoLabel.setText("<html>Presure (in Kpa) at <br>" + v +" "+ vol.getSelectedItem().toString() + "<br>"
-                                + te +" "+ temp.getSelectedItem().toString() + "</html>");
-                        } else if(s.isSelected()){
-                            //Volume
-                            p = Double.parseDouble(one.getText());
-                            te = Double.parseDouble(three.getText());
-                            double ans = Processing.PVnRT(p, 0, moles, te, press.getSelectedItem().toString(), temp.getSelectedItem().toString(), 'V');
-                            theNumber2 = ans;
-                            infoLabel.setText("<html>Volume (in L) at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
-                                + te +" "+ temp.getSelectedItem().toString() + "</html>");
-                        } else if(t.isSelected()) {
-                            //temperature
-                            p = Double.parseDouble(one.getText());
-                            v = Double.parseDouble(two.getText());
-                            if(vol.getSelectedIndex() == 1) v = v / 1000;
-                            double ans = Processing.PVnRT(p, v, moles, 0, press.getSelectedItem().toString(), "K", 'T');
-                            theNumber2 = ans;
-                            infoLabel.setText("<html>Temperature (in K) at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
-                                + v+" "+ vol.getSelectedItem().toString() + "</html>");
-                        } else if(r.isSelected()) {
-                            //Density
-                            p = Double.parseDouble(one.getText());
-                            te = Double.parseDouble(three.getText());
-                            double ans = Processing.DPmRT(0, p, chemicalDrop2.getSelectedItem().toString(), te, press.getSelectedItem().toString(),
-                                    temp.getSelectedItem().toString(), 'D');
-                            theNumber2 = ans;
-                            infoLabel.setText("<html>Density at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
-                                + te +" "+ temp.getSelectedItem().toString() + "</html>");
-                            
-                        }
-                        
-                        break;                        
+                            break;
+                        case 2:
+                            if(f.isSelected()){
+                                winLabel.setText(one.getText() + "M");
+                                theNumber = Double.parseDouble(one.getText());
+                            } else if(t.isSelected()){
+
+                                double p = Double.parseDouble(three.getText());
+                                double d = Double.parseDouble(four.getText());
+                                double a = Processing.percentToConcentration(p, d, chemicalDrop.getSelectedItem().toString());
+                                winLabel.setText(Math.round(a) + "M");
+                                theNumber = a;
+
+                            }
+                            break;
+                        case 3:
+                            if(!STP.isSelected()) {
+
+                                double p2 = Double.parseDouble(one.getText());
+                                double v2 = Double.parseDouble(two.getText());
+                                if(vol.getSelectedIndex() == 1) v2 = v2 / 1000;
+                                double t2 = Double.parseDouble(three.getText());
+                                double a = Processing.PVnRT(p2, v2, 0, t2, press.getSelectedItem().toString(), temp.getSelectedItem().toString(), 'n');
+                                Layout(winLabel, 150, 125);
+                                //winLabel.setSize(100,100);
+                                winLabel.setText("<html>" +p2 +" "+ press.getSelectedItem().toString()
+                                        + "<br>" + v2 +" "+ vol.getSelectedItem().toString() + "<br>"
+                                        + t2 +" "+ temp.getSelectedItem().toString() + "</html>");
+                                theNumber = a;
+                            } else {
+                                theNumber = 1;
+                                winLabel.setText("STP");
+                            }
+                            break;
+                        case 4:
+                            infoLabel.setText("at a Desnity of " + one.getText());
+                            theNumber2 = Double.parseDouble(one.getText());
+                            break;
+                        case 5:
+                            infoLabel.setText(one.getText() + "M");
+                            theNumber2 = Double.parseDouble(one.getText());
+                            break;
+                        case 6:
+                            double p = 0;
+                            double v = 0;
+                            double te = 0;
+                            if(f.isSelected()){
+                                //pressure
+                                v = Double.parseDouble(two.getText());
+                                if(vol.getSelectedIndex() == 1) v = v / 1000;
+                                te = Double.parseDouble(three.getText());
+                                double ans = Processing.PVnRT(0, v, moles, te, "Kpa", temp.getSelectedItem().toString(), 'P');
+                                theNumber2 = ans;
+                                infoLabel.setText("<html>Presure (in Kpa) at <br>" + v +" "+ vol.getSelectedItem().toString() + "<br>"
+                                    + te +" "+ temp.getSelectedItem().toString() + "</html>");
+                            } else if(s.isSelected()){
+                                //Volume
+                                p = Double.parseDouble(one.getText());
+                                te = Double.parseDouble(three.getText());
+                                double ans = Processing.PVnRT(p, 0, moles, te, press.getSelectedItem().toString(), temp.getSelectedItem().toString(), 'V');
+                                theNumber2 = ans;
+                                infoLabel.setText("<html>Volume (in L) at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
+                                    + te +" "+ temp.getSelectedItem().toString() + "</html>");
+                            } else if(t.isSelected()) {
+                                //temperature
+                                p = Double.parseDouble(one.getText());
+                                v = Double.parseDouble(two.getText());
+                                if(vol.getSelectedIndex() == 1) v = v / 1000;
+                                double ans = Processing.PVnRT(p, v, moles, 0, press.getSelectedItem().toString(), "K", 'T');
+                                theNumber2 = ans;
+                                infoLabel.setText("<html>Temperature (in K) at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
+                                    + v+" "+ vol.getSelectedItem().toString() + "</html>");
+                            } else if(r.isSelected()) {
+                                //Density
+                                p = Double.parseDouble(one.getText());
+                                te = Double.parseDouble(three.getText());
+                                double ans = Processing.DPmRT(0, p, chemicalDrop2.getSelectedItem().toString(), te, press.getSelectedItem().toString(),
+                                        temp.getSelectedItem().toString(), 'D');
+                                theNumber2 = ans;
+                                infoLabel.setText("<html>Density at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
+                                    + te +" "+ temp.getSelectedItem().toString() + "</html>");
+
+                            }
+
+                            break;                        
+                    }
+                }catch(java.lang.NumberFormatException w) {
+                    JOptionPane.showMessageDialog(info, "Fill in all info");
+                    go = false;
                 }
                 System.out.println("The Number: " + theNumber);
-                info.dispose();
+                if(go) info.dispose();
             }
         });
         //setting up the window
