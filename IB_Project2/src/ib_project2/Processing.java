@@ -423,28 +423,62 @@ public class Processing {
         int startUnit = GUI.units.getSelectedIndex();
         int endUnit = GUI.units2.getSelectedIndex();
         
-        if(GUI.units.getSelectedIndex() == 0) {
-                //moles, starting substance, ending substance
-                ans = Processing.molesToMoles(input, (String)GUI.chemicalDrop.getSelectedItem(), (String)GUI.chemicalDrop2.getSelectedItem()); 
+        int u = GUI.units.getSelectedIndex();
+
+        if(u == 0) { //moles
+            if(GUI.chemicalDrop2.getSelectedIndex() == 0) {
+                ans = molesToMoles(input, (String)GUI.chemicalDrop.getSelectedItem(), (String)GUI.chemicalDrop2.getSelectedItem());
+            } else {
+                ans = calculateEnd(input);
             }
-            if(GUI.units.getSelectedIndex() == 1) {
-                //grams, starting substance, ending substance
-                ans = Processing.gramsTograms(input, (String)GUI.chemicalDrop.getSelectedItem(), (String)GUI.chemicalDrop2.getSelectedItem()); 
+        }
+        else if(u == 1) {//grams
+            double go = Processing.gramsToMoles(input, (String)GUI.chemicalDrop.getSelectedItem());
+            ans = calculateEnd(go);
+        }
+        else if(u == 2 || u == 3) {//liters or mililieters
+            if(u == 3) {
+                input = input / 1000;
             }
-            if(GUI.units.getSelectedIndex() == 2) {
-                //liters  original liters, starting concentration, ending concentration
-                ans = Processing.litersToLiters(input, Double.parseDouble(GUI.InputC.getText()), Double.parseDouble(GUI.InputC.getText()));
-            }
-            if(GUI.units.getSelectedIndex() == 3) {
-                //millileiters, starting substance, ending substance
-                ans = Processing.litersToLiters((input / 1000), Double.parseDouble(GUI.InputC.getText()), Double.parseDouble(GUI.InputC.getText()));
-            }
-            if(GUI.units.getSelectedIndex() == 4) {
-              ans = Processing.molesToAtoms(input, (String)GUI.chemicalDrop.getSelectedItem());
-            }
+            //more has to be done to see if its in solid, liquid, or gas
+            double toCalc = Processing.litersToMoles(input, GUI.theNumber);
+            ans = calculateEnd(toCalc);
+        }
+
+        else if(u == 4) {//molecules
+          double toCalc = Processing.moleculesToMoles(input);
+          ans = calculateEnd(toCalc);
+        }
         return ans;
+    } 
+    public static double calculateEnd(double moles){
+        int u = GUI.units2.getSelectedIndex();
+        double a = -1;
+        
+        switch(u) {
+            case 0://moles
+                //a = Processing.molesToMoles(moles, (String)GUI.chemicalDrop2.getSelectedItem());
+                break;
+            case 1://grams
+                a = Processing.molesToGrams(moles, (String)GUI.chemicalDrop2.getSelectedItem());
+                break;
+            case 2://liters
+                a = Processing.molesToLiters(moles, GUI.theNumber2);
+                break;
+            case 3://militers
+                a = a * 1000;
+                break;
+            case 4://molecules
+                a = molesToMolecules(moles);
+                break; 
+            case 5://atoms
+                a = Processing.molesToAtoms(moles, (String)GUI.chemicalDrop2.getSelectedItem());
+                break;
+            case 6:
+                break;
+        }
+        return a;
     }
-    
     //CALCULATIONS
 
     public static double gramsToMoles(double grams, String sub) {
@@ -453,9 +487,7 @@ public class Processing {
         double answer = grams / a;
         return answer;
     }
-    public static double moleculesToMoles(double molecules, String sub) {
-        NodeProcessing.search(mainNode, sub);
-        //int coef = Integer.parseInt(NodeProcessing.lastSearch.getCo());
+    public static double moleculesToMoles(double molecules) {
         return molecules / Chemistry.avogadro; 
     }
     public static double litersToMoles(double liters, double molarity) {
@@ -494,6 +526,9 @@ public class Processing {
     }
     public static double molesToSTP(double moles){
         return moles * 22.4;
+    }
+    public static double molesToMolecules(double moles) {
+        return moles * Chemistry.avogadro; 
     }
     
     public static double gramsTograms(double grams, String beg, String fin) {
