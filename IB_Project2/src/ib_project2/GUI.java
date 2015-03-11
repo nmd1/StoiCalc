@@ -19,7 +19,7 @@ public class GUI {
     static JComboBox chemicalDrop, chemicalDrop2, units, units2;
     static JButton winBut = new JButton(), infoBut = new JButton();
     int xc, yc;
-    double theNumber, moles, theNumber2;
+    static double theNumber, moles, theNumber2;
     boolean debug = true;
 
     public Label titleLabel = new Label();
@@ -717,12 +717,12 @@ public class GUI {
                         public void actionPerformed(ActionEvent e) {
                             if(STP.isSelected()) {
                                 one.setEnabled(false); 
-                                two.setEnabled(false);
+                                two.setEnabled(true);
                                 three.setEnabled(false);
                                 
                                 press.setEnabled(false);
                                 temp.setEnabled(false);
-                                vol.setEnabled(false);
+                                vol.setEnabled(true);
                                 
                             } else {
                                 one.setEnabled(true); 
@@ -883,6 +883,8 @@ public class GUI {
                                         + t2 +" "+ temp.getSelectedItem().toString() + "</html>");
                                 theNumber = a;
                             } else {
+                                double v2 = Double.parseDouble(two.getText());
+                                winLabel.setText(v2 +" "+ vol.getSelectedItem().toString());
                                 theNumber = 1;
                                 winLabel.setText("STP");
                             }
