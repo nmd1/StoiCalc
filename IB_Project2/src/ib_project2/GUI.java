@@ -364,7 +364,7 @@ public class GUI {
                 if (ans == -1) {
                     Answer.setText("Error");
                 } else {
-                    Answer.setText(ans + "");
+                    Answer.setText("Answer: " + ans + "");
                 }
             }
         });
@@ -475,7 +475,7 @@ public class GUI {
             }
             
         });
-                     
+        chemicalDrop.addActionListener(chemicalDrop2.getActionListeners()[0]);    
         //SmallWindow
         stoic.add(equationField);
         stoic.add(line);
