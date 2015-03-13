@@ -16,11 +16,11 @@ public class GUI {
     SpringLayout layout = new SpringLayout();
     Container pane = new Container(), sPane, iPane;
     static TextField equationField, InputNumb, InputC;
-    static JComboBox chemicalDrop, chemicalDrop2, units, units2;
+    static JComboBox chemicalDrop, chemicalDrop2, units, units2, phase, phase2;
     static JButton winBut = new JButton(), infoBut = new JButton();
     int xc, yc;
     static double theNumber, moles, theNumber2;
-    boolean debug = true;
+    boolean debug = false;
 
     public Label titleLabel = new Label();
     public Button[] buttons = new Button[100];
@@ -42,13 +42,13 @@ public class GUI {
 
     public void mainWindow() {
 
-        titleLabel.setText("StoicCalc \n An exploration");
+        titleLabel.setText("StoicCalc: \n an exploration");
         Font f = new Font("Bookman Old Style", Font.PLAIN, 30);
         titleLabel.setFont(f);
         Layout(titleLabel, 88, 25);
         titleLabel.setVisible(true);
 
-        //SOLVE MANY BUTTONS PROBLEM//SOLVED. Long ago too.
+        
         JButton conv = new JButton();
         conv.setText("stoic");
         Dimension a = new Dimension(100, 40);
@@ -65,7 +65,7 @@ public class GUI {
         JButton exit = new JButton();
         exit.setText("Exit");
         exit.setPreferredSize(a);
-        Layout(exit, 210, 250);
+        Layout(exit, 300, 150);
         exit.setVisible(true);
         exit.addActionListener(new ActionListener() {
             @Override
@@ -114,17 +114,18 @@ public class GUI {
         arrow.setSize(10, 10);
         arrow.setFont(new Font("Comic Sans", Font.PLAIN, 50));
         
-        winLabel = new JLabel("Null");
+        winLabel = new JLabel("");
        // winLabel.setText("");
         winLabel.setSize(10, 10);
         
-        infoLabel = new JLabel("Null");
+        infoLabel = new JLabel("");
         //infoLabel.setText("");
         infoLabel.setSize(10, 10);
         
         Answer = new JLabel();
         Answer.setText("");
         Answer.setSize(10, 10);
+        Answer.setFont(new Font("Comic Sans", Font.PLAIN, 20));
 
         equationField = new TextField();
         equationField.setColumns(50);
@@ -159,13 +160,13 @@ public class GUI {
         chemicalDrop2.setMaximumRowCount(5);
         chemicalDrop2.setPreferredSize(new Dimension(65, 20));
 
-        final JComboBox phase = new JComboBox();
+        phase = new JComboBox();
         phase.addItem("gas");
         phase.addItem("liquid");
         phase.addItem("solid");
         phase.setSelectedItem(null);
         
-        final JComboBox phase2 = new JComboBox();
+        phase2 = new JComboBox();
         phase2.addItem("gas");
         phase2.addItem("liquid");
         phase2.addItem("solid");
@@ -223,7 +224,7 @@ public class GUI {
         Layout(phase2, 350, 85);
         Layout(output, 100, 170);
         Layout(arrow, 225, 85);
-        Layout(Answer, 110, 250);
+        Layout(Answer, 175, 250);
         Layout(stoicTitleScreen, 170, 7);
         Layout(winBut, 70, 130);
         Layout(infoBut, 300, 130);
@@ -317,6 +318,9 @@ public class GUI {
                     }*/
                     
                     output.setText(outputText);  //Answer.setText(output.getWidth() + "");
+                } else {
+                    chemicalDrop.removeAllItems();
+                    chemicalDrop2.removeAllItems();
                 }
                 //Here is where we parse the string.
                 //its time to make an algorithm.
@@ -458,7 +462,22 @@ public class GUI {
             }
             
         });
-        chemicalDrop.addActionListener(phase);
+        chemicalDrop2.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if(chemicalDrop2.getSelectedIndex() == 0) {
+                    double ans = Processing.calculate();
+                    if(ans < 0) {
+                        Answer.setText("Error");
+                    } else {
+                        Answer.setText("Answer: "+ ans + "");
+                    }
+                    
+                }
+            }
+            
+        });
                      
         //SmallWindow
         stoic.add(equationField);
@@ -519,6 +538,7 @@ public class GUI {
         JLabel fourth = new JLabel("Null");
         
         final JCheckBox STP = new JCheckBox();
+        STP.setVisible(false);
         
         final JRadioButton f = new JRadioButton("");f.setVisible(false);
         final JRadioButton s = new JRadioButton("");s.setVisible(false);
@@ -634,6 +654,7 @@ public class GUI {
             
             switch (name) {
                 case "Density":
+                    
                     title.setText("Set Density");
                     first.setText("Input Density in g/L");
                     indicator = 1;
@@ -838,6 +859,9 @@ public class GUI {
                     info.setSize(315,220);
                     indicator = 6;
                     break;
+                case "STP":
+                    indicator = 7;
+                    break;
             }
             
         }
@@ -853,11 +877,13 @@ public class GUI {
                         case 1:
                             winLabel.setText("Density:" + one.getText());
                             theNumber = Double.parseDouble(one.getText());
+                            //The number is density
                             break;
                         case 2:
                             if(f.isSelected()){
                                 winLabel.setText(one.getText() + "M");
                                 theNumber = Double.parseDouble(one.getText());
+                                //the number is Molarity
                             } else if(t.isSelected()){
 
                                 double p = Double.parseDouble(three.getText());
@@ -865,6 +891,7 @@ public class GUI {
                                 double a = Processing.percentToConcentration(p, d, chemicalDrop.getSelectedItem().toString());
                                 winLabel.setText(Math.round(a) + "M");
                                 theNumber = a;
+                                //the number is Molarity
 
                             }
                             break;
@@ -877,25 +904,28 @@ public class GUI {
                                 double t2 = Double.parseDouble(three.getText());
                                 double a = Processing.PVnRT(p2, v2, 0, t2, press.getSelectedItem().toString(), temp.getSelectedItem().toString(), 'n');
                                 Layout(winLabel, 150, 125);
-                                //winLabel.setSize(100,100);
                                 winLabel.setText("<html>" +p2 +" "+ press.getSelectedItem().toString()
                                         + "<br>" + v2 +" "+ vol.getSelectedItem().toString() + "<br>"
                                         + t2 +" "+ temp.getSelectedItem().toString() + "</html>");
                                 theNumber = a;
+                                //the number is moles
                             } else {
                                 double v2 = Double.parseDouble(two.getText());
                                 winLabel.setText(v2 +" "+ vol.getSelectedItem().toString());
-                                theNumber = 1;
+                                theNumber = v2 / 22.4;
+                                //the number is moles
                                 winLabel.setText("STP");
                             }
                             break;
                         case 4:
-                            infoLabel.setText("at a Desnity of " + one.getText());
+                            infoLabel.setText("at a Desnity of " + one.getText() + "g/L");
                             theNumber2 = Double.parseDouble(one.getText());
+                            //The number is density
                             break;
                         case 5:
                             infoLabel.setText(one.getText() + "M");
                             theNumber2 = Double.parseDouble(one.getText());
+                            //the number is Molarity
                             break;
                         case 6:
                             double p = 0;
@@ -907,7 +937,7 @@ public class GUI {
                                 if(vol.getSelectedIndex() == 1) v = v / 1000;
                                 te = Double.parseDouble(three.getText());
                                 double ans = Processing.PVnRT(0, v, moles, te, "Kpa", temp.getSelectedItem().toString(), 'P');
-                                theNumber2 = ans;
+                                theNumber2 = ans;//the number is pressure
                                 infoLabel.setText("<html>Presure (in Kpa) at <br>" + v +" "+ vol.getSelectedItem().toString() + "<br>"
                                     + te +" "+ temp.getSelectedItem().toString() + "</html>");
                             } else if(s.isSelected()){
@@ -915,7 +945,7 @@ public class GUI {
                                 p = Double.parseDouble(one.getText());
                                 te = Double.parseDouble(three.getText());
                                 double ans = Processing.PVnRT(p, 0, moles, te, press.getSelectedItem().toString(), temp.getSelectedItem().toString(), 'V');
-                                theNumber2 = ans;
+                                theNumber2 = ans;//the number is volume
                                 infoLabel.setText("<html>Volume (in L) at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
                                     + te +" "+ temp.getSelectedItem().toString() + "</html>");
                             } else if(t.isSelected()) {
@@ -924,7 +954,7 @@ public class GUI {
                                 v = Double.parseDouble(two.getText());
                                 if(vol.getSelectedIndex() == 1) v = v / 1000;
                                 double ans = Processing.PVnRT(p, v, moles, 0, press.getSelectedItem().toString(), "K", 'T');
-                                theNumber2 = ans;
+                                theNumber2 = ans;//the number is temperature
                                 infoLabel.setText("<html>Temperature (in K) at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
                                     + v+" "+ vol.getSelectedItem().toString() + "</html>");
                             } else if(r.isSelected()) {
@@ -933,19 +963,23 @@ public class GUI {
                                 te = Double.parseDouble(three.getText());
                                 double ans = Processing.DPmRT(0, p, chemicalDrop2.getSelectedItem().toString(), te, press.getSelectedItem().toString(),
                                         temp.getSelectedItem().toString(), 'D');
-                                theNumber2 = ans;
+                                theNumber2 = ans;//The Number is density
                                 infoLabel.setText("<html>Density at <br>" + p +" "+ press.getSelectedItem().toString() + "<br>"
                                     + te +" "+ temp.getSelectedItem().toString() + "</html>");
 
                             }
 
-                            break;                        
+                            break;
+                        case 7:
+                            theNumber2 = Double.parseDouble(one.getText());
+                            break;
                     }
                 }catch(java.lang.NumberFormatException w) {
                     JOptionPane.showMessageDialog(info, "Fill in all info");
                     go = false;
                 }
                 System.out.println("The Number: " + theNumber);
+                System.out.println("The Number2: " + theNumber2);
                 if(go) info.dispose();
             }
         });

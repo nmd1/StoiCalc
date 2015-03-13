@@ -10,6 +10,7 @@ public class Stoicalc {
     static Graphing graphing = new Graphing();
     static Processing processing = new Processing();
    
+    static double versionNumber = 1.0;
     public static void main(String[] args) {
 
         try {

@@ -441,8 +441,25 @@ public class Processing {
                 input = input / 1000;
             }
             //more has to be done to see if its in solid, liquid, or gas
-            double toCalc = Processing.litersToMoles(input, GUI.theNumber);
-            ans = calculateEnd(toCalc);
+            
+            int state = GUI.phase.getSelectedIndex();
+            switch(state) {
+                case 0:
+                    //if its a gas
+                    ans = calculateEnd(GUI.theNumber);
+                    break;
+                case 1:
+                    //if its a liquid
+                    double toCalc = Processing.litersToMoles(input, GUI.theNumber);
+                    ans = calculateEnd(toCalc);
+                    break;
+                case 2:
+                    //if its a solid
+                    double x = litersToGrams(input, GUI.theNumber);
+                    double y = gramsToMoles(x, (String)GUI.chemicalDrop.getSelectedItem());
+                    ans = calculateEnd(y);
+                    break;
+            }
         }
 
         else if(u == 4) {//molecules
@@ -457,24 +474,40 @@ public class Processing {
         
         switch(u) {
             case 0://moles
-                //a = Processing.molesToMoles(moles, (String)GUI.chemicalDrop2.getSelectedItem());
+                //already handeled.
                 break;
             case 1://grams
                 a = Processing.molesToGrams(moles, (String)GUI.chemicalDrop2.getSelectedItem());
                 break;
+            case 3://mililiters
+                a = a * 1000;    
             case 2://liters
-                a = Processing.molesToLiters(moles, GUI.theNumber2);
+                int state = GUI.phase2.getSelectedIndex();
+                switch(state) {
+                    case 0:
+                        //if its a gas (STP)
+                        a = moles * 22.4;
+                        break;
+                    case 1:
+                        //if its a liquid
+                        a = Processing.molesToLiters(moles, GUI.theNumber2);
+                        break;
+                    case 2:
+                        //if its a solid
+                        double x = molesToGrams(moles, (String)GUI.chemicalDrop2.getSelectedItem());
+                        a = gramsToLiters(x, GUI.theNumber2);
+                        break;
+                }
                 break;
-            case 3://militers
-                a = a * 1000;
-                break;
+
             case 4://molecules
                 a = molesToMolecules(moles);
                 break; 
             case 5://atoms
                 a = Processing.molesToAtoms(moles, (String)GUI.chemicalDrop2.getSelectedItem());
                 break;
-            case 6:
+            case 6://gasInteresting
+                a = GUI.theNumber2;
                 break;
         }
         return a;
@@ -495,6 +528,12 @@ public class Processing {
     }
     public static double stpToMoles(double liters) {
         return liters / 22.4;
+    }
+    public static double litersToGrams(double volume, double density) {
+        return volume * density; //L * g/L
+    }
+    public static double gramsToLiters(double grams, double density) {
+        return grams / density; //L * g/L
     }
     
     public static double molesToMoles(double moles, String beg, String fin) {
