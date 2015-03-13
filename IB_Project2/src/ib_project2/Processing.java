@@ -468,7 +468,7 @@ public class Processing {
         }
         return ans;
     } 
-    public static double calculateEnd(double moles){
+    private static double calculateEnd(double moles){
         int u = GUI.units2.getSelectedIndex();
         double a = -1;
         
@@ -570,18 +570,6 @@ public class Processing {
         return moles * Chemistry.avogadro; 
     }
     
-    public static double gramsTograms(double grams, String beg, String fin) {
-        double one = gramsToMoles(grams, beg);
-        double two = molesToMoles(one, beg, fin);
-        double three = molesToGrams(two, fin);
-
-        return three;        
-    }
-    public static double litersToLiters(double liters, double molarity, double molarity2) {
-        double one = litersToMoles(liters, molarity);
-        double two = molesToLiters(one, molarity2);
-        return two;
-    }
     public static double percentToConcentration(double percent, double density, String sub) {
         NodeProcessing.search(mainNode, sub);
         double molarMass = NodeProcessing.lastSearch.getMolarMass();
