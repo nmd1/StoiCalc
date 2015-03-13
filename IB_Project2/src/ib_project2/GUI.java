@@ -466,15 +466,12 @@ public class GUI {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                if(chemicalDrop2.getSelectedIndex() == 0) {
-                    double ans = Processing.calculate();
-                    if(ans < 0) {
-                        Answer.setText("Error");
-                    } else {
-                        Answer.setText("Answer: "+ ans + "");
-                    }
-                    
-                }
+                double ans = Processing.calculate();
+                if(ans < 0) {
+                    Answer.setText("Error");
+                } else {
+                    Answer.setText("Answer: "+ ans + "");
+                }  
             }
             
         });
