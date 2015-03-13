@@ -426,7 +426,7 @@ public class Processing {
         int u = GUI.units.getSelectedIndex();
 
         if(u == 0) { //moles
-            if(GUI.chemicalDrop2.getSelectedIndex() == 0) {
+            if(GUI.units2.getSelectedIndex() == 0) {
                 ans = molesToMoles(input, (String)GUI.chemicalDrop.getSelectedItem(), (String)GUI.chemicalDrop2.getSelectedItem());
             } else {
                 ans = calculateEnd(input);
