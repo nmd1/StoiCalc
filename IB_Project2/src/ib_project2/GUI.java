@@ -1,14 +1,16 @@
 package ib_project2;
 
-;
+
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
-
-
+/**
+ * Handles all basic Graphic user interface code
+ * @author nemo
+ */
 public class GUI {
 
     public JFrame main, stoic, info;

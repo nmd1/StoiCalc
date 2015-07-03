@@ -1,7 +1,7 @@
 package ib_project2;
 
 /**
- *
+ * Stores chemical information for all elements and also stores constants.
  * @author nemo
  */
 public class Chemistry {

@@ -4,6 +4,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
+/**
+ * Main method for the program. Also handles the beautification of the GUI window.
+ * @author nemo
+ */
 public class Stoicalc {
     static GUI gui = new GUI();
     //static Elements chemistry = new Elements();

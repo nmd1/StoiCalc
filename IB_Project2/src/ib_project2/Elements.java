@@ -1,10 +1,8 @@
 package ib_project2;
 
 /**
- *
+ * Stores the information for each element. Only used in Chemistry file.
  * @author nemo
- * Chemical constants get put in here.
- * periodic table! and other pieces of information 
  */
 public class Elements {
     public String name;

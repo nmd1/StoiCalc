@@ -3,6 +3,11 @@ package ChemNode;
 import ib_project2.*;
 import java.util.ArrayList;
 
+/**
+ * This file stores the information for each individual substance 
+ * For example, H2O or C6H12O6
+ * @author nemo
+ */
 public class Substance {
     //for example, 3C6H12O6+
     private String name;

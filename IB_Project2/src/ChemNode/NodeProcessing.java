@@ -3,7 +3,8 @@ package ChemNode;
 import java.util.Scanner;
 
 /**
- *
+ * This file provides the methods to add, remove, search, count, modify,
+ * and visually print the nodes from the linked list of chemical species
  * @author nemo
  */
 public class NodeProcessing {

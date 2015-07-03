@@ -1,5 +1,9 @@
 package ChemNode;
 
+/**
+ * The Class that sets up the structures of the node in the equation linked list 
+ * @author nemo
+ */
 public class Node {
     public Substance chem;
     public Node next; 

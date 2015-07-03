@@ -7,13 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- *
+ * Handles all stoiciometric calculations 
  * @author Nehemiah
  * 
- * Contains processes:
- * Stoic processing
- * Equilibrium  processing
- * String processing
  * 
  */
 public class Processing {
