@@ -1,11 +1,14 @@
-package ib_project2;
+package Stoic;
 
 import ChemNode.Node;
 import ChemNode.NodeProcessing;
 import ChemNode.Substance;
+import ib_project2.Chemistry;
+import ib_project2.Elements;
+import ib_project2.GUI;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import ib_project2.GUI.*;
 /**
  * Handles all stoiciometric calculations 
  * @author Nehemiah
@@ -413,6 +416,7 @@ public class Processing {
     
     public static double calculate() {
         double ans = -1;
+        
         if(GUI.InputNumb.getText().isEmpty()) return -1;
         double input = Double.parseDouble(GUI.InputNumb.getText());
         System.out.println(GUI.units);

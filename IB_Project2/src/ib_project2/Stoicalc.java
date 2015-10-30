@@ -1,8 +1,10 @@
 package ib_project2;
 
+import Stoic.Processing;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+
 
 /**
  * Main method for the program. Also handles the beautification of the GUI window.

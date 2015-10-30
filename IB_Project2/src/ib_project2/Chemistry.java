@@ -8,9 +8,10 @@ public class Chemistry {
     //static:accessed via Chemistry.Hydrogen
     //nonstatic: accessed via Chemistry c = new Chemistry(); c.Hydrigen;
     
-    final static Double avogadro = 6.0221413 * Math.pow(10, 23);
+    final public static Double avogadro = 6.0221413 * Math.pow(10, 23);
     
-    final static Double R = 8.3144621;
+    final public static Double R = 8.3144621;
+    
     //Source for the gas constant: 
     //http://mutuslab.cs.uwindsor.ca/schurko/introphyschem/handouts/gasconstant.pdf
     
